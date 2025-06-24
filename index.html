@@ -2,193 +2,234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AmitTG - List Tool (Dark)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>AmitTG - Code Inserter</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#00ffe7" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" /> -->
+
   <style>
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #121212;
       color: #ffffff;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    h2, h3 { text-align: center; color: #00ffe7; }
-    textarea, input {
-      width: 100%;
-      margin-bottom: 10px;
+      margin: 0;
       padding: 10px;
-      border-radius: 8px;
-      background: #1e1e1e;
-      border: 1px solid #555;
-      color: #fff;
     }
-    button {
-      padding: 10px;
-      margin: 5px 0;
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1f1f1f;
+      padding: 10px 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    header h2 {
+      font-size: 20px;
+      color: #00ffe7;
+      margin: 0;
+    }
+    .refresh-btn {
+      background-color: #333;
+      color: #00ffcc;
       border: none;
-      background-color: #00b894;
-      color: white;
+      padding: 6px 12px;
+      font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
+    }
+    textarea, input {
       width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #1e1e1e;
+      border: 1px solid #444;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0;
+      background: linear-gradient(90deg, #00b894, #00cec9);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
       font-weight: bold;
+      cursor: pointer;
     }
     button:hover {
-      background-color: #00cec9;
+      opacity: 0.9;
+    }
+    .copy-btn {
+      background-color: #0984e3;
+    }
+    .copied {
+      text-align: center;
+      color: #00ff99;
+      margin-bottom: 10px;
     }
     pre {
       background: #1e1e1e;
+      border: 1px solid #444;
       padding: 10px;
+      border-radius: 10px;
       white-space: pre-wrap;
-      border-radius: 8px;
-      color: #dfe6e9;
-      border: 1px solid #555;
+      font-size: 14px;
+      color: #e0e0e0;
     }
+    .section { display: none; }
   </style>
 </head>
+
 <body>
 
-<h2>📋 AmitTG - List Maker</h2>
+<header>
+  <h2>AmitTG Tool</h2>
+  <button class="refresh-btn" onclick="location.reload()">🔄</button>
+</header>
 
-<button onclick="showSection('list')">📋 List</button>
+<button onclick="showSection('list')">📋 Save List</button>
+<button onclick="showSection('insert')">🔁 Insert Code</button>
 <button onclick="showSection('mono')">🔤 Mono</button>
 <button onclick="showSection('show')">👀 Show</button>
 <button onclick="resetList()">♻️ Reset</button>
-<button onclick="showSection('add')">➕ Add Details</button>
 
-<div id="listSection" style="display:none">
-  <h3>Enter Date</h3>
-  <input id="dateInput" placeholder="e.g., 14 May" />
-  <h3>Enter List</h3>
-  <textarea id="listInput" rows="8" placeholder="1. ABCDJDJDJ\n2. deleted\n..."></textarea>
-  <button onclick="saveList()">✅ Save List</button>
+<div id="listSection" class="section">
+  <h3>📅 Enter Date</h3>
+  <input id="dateInput" placeholder="e.g., 24 June" />
+  <h3>📄 List (1 per line)</h3>
+  <textarea id="listInput" rows="6" placeholder="1. ABC123456\n2. deleted\n3. XYZ987654"></textarea>
+  <button onclick="saveList()">✅ Save</button>
 </div>
 
-<div id="monoSection" style="display:none">
-  <h3>Mono Format Viewer</h3>
-  <textarea id="monoInput" rows="8" placeholder="ABC123456\nXYZ987654\n..."></textarea>
+<div id="insertSection" class="section">
+  <h3>📝 Code + Amount</h3>
+  <input id="insertInput" placeholder="🧾 ABC123456 2300 likho yahan..." />
+  <button onclick="insertCode()">Insert</button>
+  <div id="insertResult"></div>
+</div>
+
+<div id="monoSection" class="section">
+  <h3>🔤 Mono Formatter</h3>
+  <textarea id="monoInput" rows="6" placeholder="ABC123456\nXYZ987654"></textarea>
   <button onclick="convertMono()">Convert</button>
   <pre id="monoOutput"></pre>
+  <button class="copy-btn" onclick="copyToClipboard('monoOutput', 'monoCopied')">📋 Copy</button>
+  <div class="copied" id="monoCopied"></div>
 </div>
 
-<div id="addSection" style="display:none">
-  <h3>Send Details (5 lines)</h3>
-  <textarea id="addInput" rows="6" placeholder="CODE AMOUNT\nCHANNEL\nTOTAL\nDATE\nID"></textarea>
-  <button onclick="generateAddDetails()">Generate</button>
-  <pre id="addOutput"></pre>
-</div>
-
-<div id="showSection" style="display:none">
-  <h3>Stored List</h3>
-  <pre id="showOutput">No list saved yet.</pre>
+<div id="showSection" class="section">
+  <h3>📋 Updated List</h3>
+  <pre id="showOutput">No list yet.</pre>
+  <button class="copy-btn" onclick="copyToClipboard('showOutput', 'showCopied')">📋 Copy</button>
+  <div class="copied" id="showCopied"></div>
 </div>
 
 <script>
-  let userData = {
-    list: [],
-    date: '',
-    next_insert_index: 0
-  };
+  let userData = { list: [], date: '', next_insert_index: 0 };
 
   function showSection(id) {
-    ['list', 'mono', 'add', 'show'].forEach(sec => {
+    ['list', 'insert', 'mono', 'show'].forEach(sec => {
       document.getElementById(sec + 'Section').style.display = sec === id ? 'block' : 'none';
     });
-    if (id === 'show') {
-      showList();
-    }
+    if (id === 'show') showList();
   }
 
   function saveList() {
     const date = document.getElementById('dateInput').value.trim();
     const lines = document.getElementById('listInput').value.trim().split("\n");
     const cleaned = [];
-
     lines.forEach(ln => {
       ln = ln.trim();
       if (!ln) return;
-      const parts = ln.split(" ");
+      const parts = ln.split(".");
       const serial = parseInt(parts[0]);
-      if (ln.toLowerCase().includes("del")) {
+      const content = parts[1]?.trim() || "";
+      if (content.toLowerCase().includes("del")) {
         cleaned.push({ serial: serial, value: "deleted" });
       } else {
-        cleaned.push({ serial: serial, value: parts[parts.length - 1] });
+        cleaned.push({ serial: serial, value: content });
       }
     });
-
-    userData = {
-      list: cleaned,
-      date: date,
-      next_insert_index: 0
-    };
-
+    userData = { list: cleaned, date: date, next_insert_index: 0 };
     localStorage.setItem("userList", JSON.stringify(userData));
-    alert("✅ List saved successfully!");
+    alert("✅ List Saved");
+  }
+
+  function insertCode() {
+    const input = document.getElementById('insertInput').value.trim();
+    const parts = input.split(" ");
+    const code = parts[0], amount = parts[1];
+    if (!/^[A-Za-z0-9]{9}$/.test(code) || isNaN(amount)) {
+      document.getElementById('insertResult').innerHTML = `<p style="color:red;">❌ Invalid Format</p>`;
+      return;
+    }
+    let data = JSON.parse(localStorage.getItem("userList") || "{}");
+    if (!data.list || data.list.length === 0) {
+      document.getElementById('insertResult').innerHTML = `<p style="color:red;">⚠️ No list saved</p>`;
+      return;
+    }
+    let inserted = false;
+    for (let i = data.next_insert_index; i < data.list.length; i++) {
+      const item = data.list[i];
+      if (item.value !== "deleted" && !item.value.includes(" ")) {
+        item.value = `${code}   ${amount}   ${item.value}`;
+        data.next_insert_index = i + 1;
+        inserted = true;
+        break;
+      }
+    }
+    if (inserted) {
+      localStorage.setItem("userList", JSON.stringify(data));
+      document.getElementById('insertResult').innerHTML = `<p style="color:green;">✅ Inserted</p>`;
+    } else {
+      document.getElementById('insertResult').innerHTML = `<p style="color:orange;">⚠️ No space left</p>`;
+    }
+  }
+
+  function convertMono() {
+    const lines = document.getElementById('monoInput').value.trim().split("\n");
+    const out = lines.filter(Boolean).map(c => `\`${c.trim()}\``).join("\n\n");
+    document.getElementById('monoOutput').innerText = out;
   }
 
   function showList() {
-    const saved = localStorage.getItem("userList");
-    if (!saved) return;
-
-    const data = JSON.parse(saved);
-    let text = `**${data.date}**\n\n****\n\n`;
-
-    data.list.forEach(itm => {
-      let value = itm.value.replace(/\b([A-Za-z0-9]{9})\b/g, "`$1`");
-      text += `${itm.serial}.   ${value}\n\n`;
+    const data = JSON.parse(localStorage.getItem("userList") || "{}");
+    if (!data.list || data.list.length === 0) {
+      document.getElementById('showOutput').innerText = "No list saved.";
+      return;
+    }
+    let out = `**${data.date}**\n\n****\n\n`;
+    data.list.forEach(item => {
+      let line = item.value.replace(/\b([A-Za-z0-9]{9})\b/g, "`$1`");
+      out += `${item.serial}.   ${line}\n\n`;
     });
-
-    document.getElementById('showOutput').innerText = text;
+    document.getElementById('showOutput').innerText = out;
   }
 
   function resetList() {
     localStorage.removeItem("userList");
     userData = { list: [], date: '', next_insert_index: 0 };
-    alert("🧹 List reset successfully.");
+    alert("🧹 Reset Done");
     showSection('show');
   }
 
-  function convertMono() {
-    const lines = document.getElementById('monoInput').value.trim().split("\n");
-    const out = lines.map(l => l.trim() ? `\`${l.trim()}\`` : "").filter(Boolean).join("\n\n");
-    document.getElementById('monoOutput').innerText = out;
-  }
-
-  function generateAddDetails() {
-    const lines = document.getElementById('addInput').value.trim().split("\n");
-    if (lines.length !== 5) {
-      alert("❌ Please enter exactly 5 lines.");
-      return;
-    }
-
-    const match = lines[0].trim().match(/^(\w+)\s+(\d+)$/);
-    if (!match) {
-      alert("❌ First line format should be: CODE AMOUNT");
-      return;
-    }
-
-    const [_, code, amount] = match;
-    const channel = lines[1].trim();
-    const total = lines[2].trim();
-    const date = lines[3].trim();
-    const id = lines[4].trim();
-
-    const formatted = `
-𝗡𝗨𝗠𝗕𝗘R:  \`${code}\` {${amount}}
-
-𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡AME--  ${channel} ✅
-
-𝗧𝗢𝗧𝗔𝗟 N𝗨𝗠𝗕𝗘𝗥 :-  ${total} ✅
-
-𝗗𝗔𝗧𝗘 :- ${date} ✅
-
-𝗣𝗘𝗡𝗗𝗜𝗡𝗚 𝗣𝗔𝗬𝗠𝗘𝗡𝗧:-
-
-ID:- ${id} ✅
-`;
-
-    document.getElementById('addOutput').innerText = formatted;
+  function copyToClipboard(elemId, msgId) {
+    const text = document.getElementById(elemId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById(msgId).innerText = "✅ Copied!";
+      setTimeout(() => { document.getElementById(msgId).innerText = ""; }, 1500);
+    });
   }
 </script>
 
