@@ -5,94 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>AmitTG - Code Inserter</title>
 
+  <!--  PWA  -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#00ffe7" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <!-- <link rel="icon" type="image/png" href="icon.png" />
-  <link rel="apple-touch-icon" href="icon.png" /> -->
 
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #121212;
-      color: #ffffff;
-      margin: 0;
-      padding: 10px;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #1f1f1f;
-      padding: 10px 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    header h2 {
-      font-size: 20px;
-      color: #00ffe7;
-      margin: 0;
-    }
-    .refresh-btn {
-      background-color: #333;
-      color: #00ffcc;
-      border: none;
-      padding: 6px 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    textarea, input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      background: #1e1e1e;
-      border: 1px solid #444;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 16px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin: 5px 0;
-      background: linear-gradient(90deg, #00b894, #00cec9);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .copy-btn {
-      background-color: #0984e3;
-    }
-    .copied {
-      text-align: center;
-      color: #00ff99;
-      margin-bottom: 10px;
-    }
-    pre {
-      background: #1e1e1e;
-      border: 1px solid #444;
-      padding: 10px;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      font-size: 14px;
-      color: #e0e0e0;
-    }
-    .section { display: none; }
+    *{box-sizing:border-box}
+    body{font-family:'Segoe UI',sans-serif;background:#121212;color:#fff;margin:0;padding:10px}
+    header{display:flex;justify-content:space-between;align-items:center;background:#1f1f1f;padding:10px 15px;border-radius:12px;margin-bottom:15px}
+    header h2{font-size:20px;color:#00ffe7;margin:0}
+    .refresh-btn{background:#333;color:#00ffcc;border:none;padding:6px 12px;font-size:16px;border-radius:8px;cursor:pointer}
+    textarea,input{width:100%;padding:12px;margin-bottom:10px;background:#1e1e1e;border:1px solid #444;border-radius:10px;color:#fff;font-size:16px}
+    button{width:100%;padding:12px;margin:5px 0;background:linear-gradient(90deg,#00b894,#00cec9);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
+    button:hover{opacity:.9}
+    .copy-btn{background:#0984e3}
+    .copied{text-align:center;color:#00ff99;margin-bottom:10px}
+    pre{background:#1e1e1e;border:1px solid #444;padding:10px;border-radius:10px;white-space:pre-wrap;font-size:14px;color:#e0e0e0}
+    .section{display:none}
   </style>
 </head>
 
 <body>
-
 <header>
   <h2>AmitTG Tool</h2>
   <button class="refresh-btn" onclick="location.reload()">🔄</button>
@@ -104,14 +40,16 @@
 <button onclick="showSection('show')">👀 Show</button>
 <button onclick="resetList()">♻️ Reset</button>
 
+<!--  LIST  -->
 <div id="listSection" class="section">
   <h3>📅 Enter Date</h3>
   <input id="dateInput" placeholder="e.g., 24 June" />
   <h3>📄 List (1 per line)</h3>
-  <textarea id="listInput" rows="6" placeholder="1. ABC123456\n2. deleted\n3. XYZ987654"></textarea>
+  <textarea id="listInput" rows="6" placeholder="1. 2400 5&#10;2. Del&#10;3. 3500 4"></textarea>
   <button onclick="saveList()">✅ Save</button>
 </div>
 
+<!--  INSERT  -->
 <div id="insertSection" class="section">
   <h3>📝 Code + Amount</h3>
   <input id="insertInput" placeholder="🧾 ABC123456 2300 likho yahan..." />
@@ -119,119 +57,124 @@
   <div id="insertResult"></div>
 </div>
 
+<!--  MONO  -->
 <div id="monoSection" class="section">
   <h3>🔤 Mono Formatter</h3>
-  <textarea id="monoInput" rows="6" placeholder="ABC123456\nXYZ987654"></textarea>
+  <textarea id="monoInput" rows="6" placeholder="ABC123456&#10;XYZ987654"></textarea>
   <button onclick="convertMono()">Convert</button>
   <pre id="monoOutput"></pre>
-  <button class="copy-btn" onclick="copyToClipboard('monoOutput', 'monoCopied')">📋 Copy</button>
+  <button class="copy-btn" onclick="copyToClipboard('monoOutput','monoCopied')">📋 Copy</button>
   <div class="copied" id="monoCopied"></div>
 </div>
 
+<!--  SHOW  -->
 <div id="showSection" class="section">
   <h3>📋 Updated List</h3>
   <pre id="showOutput">No list yet.</pre>
-  <button class="copy-btn" onclick="copyToClipboard('showOutput', 'showCopied')">📋 Copy</button>
+  <button class="copy-btn" onclick="copyToClipboard('showOutput','showCopied')">📋 Copy</button>
   <div class="copied" id="showCopied"></div>
 </div>
 
 <script>
-  let userData = { list: [], date: '', next_insert_index: 0 };
+let userData = {list:[],date:'',next_insert_index:0};
 
-  function showSection(id) {
-    ['list', 'insert', 'mono', 'show'].forEach(sec => {
-      document.getElementById(sec + 'Section').style.display = sec === id ? 'block' : 'none';
-    });
-    if (id === 'show') showList();
+function showSection(id){
+  ['list','insert','mono','show'].forEach(sec=>{
+    document.getElementById(sec+'Section').style.display = (sec===id?'block':'none');
+  });
+  if(id==='show') showList();
+}
+
+/* ---------- SAVE LIST ---------- */
+function saveList(){
+  const date  = document.getElementById('dateInput').value.trim();
+  const lines = document.getElementById('listInput').value.trim().split('\n');
+  const cleaned = [];
+
+  lines.forEach(ln=>{
+    ln = ln.trim();
+    if(!ln) return;
+    const parts = ln.split('.');
+    const serial = parseInt(parts[0]);
+    const rest   = (parts[1]||'').trim();
+
+    if(/del/i.test(rest)){               // Del / Delete
+      cleaned.push({serial,value:'delete'});
+    }else{
+      const tokens = rest.split(/\s+/);
+      const last   = tokens[tokens.length-1];  // store only last number/word
+      cleaned.push({serial,value:last});
+    }
+  });
+
+  userData = {list:cleaned,date,next_insert_index:0};
+  localStorage.setItem('userList',JSON.stringify(userData));
+  alert('✅ List Saved');
+}
+
+/* ---------- INSERT CODE ---------- */
+function insertCode(){
+  const input = document.getElementById('insertInput').value.trim();
+  const [code,amount] = input.split(/\s+/);
+  if(!/^[A-Za-z0-9]{9}$/.test(code)||isNaN(amount)){
+    document.getElementById('insertResult').innerHTML = '<p style="color:red;">❌ Invalid Format</p>'; return;
+  }
+  let data = JSON.parse(localStorage.getItem('userList')||'{}');
+  if(!data.list||!data.list.length){
+    document.getElementById('insertResult').innerHTML = '<p style="color:red;">⚠️ No list saved</p>';return;
   }
 
-  function saveList() {
-    const date = document.getElementById('dateInput').value.trim();
-    const lines = document.getElementById('listInput').value.trim().split("\n");
-    const cleaned = [];
-    lines.forEach(ln => {
-      ln = ln.trim();
-      if (!ln) return;
-      const parts = ln.split(".");
-      const serial = parseInt(parts[0]);
-      const content = parts[1]?.trim() || "";
-      if (content.toLowerCase().includes("del")) {
-        cleaned.push({ serial: serial, value: "deleted" });
-      } else {
-        cleaned.push({ serial: serial, value: content });
-      }
-    });
-    userData = { list: cleaned, date: date, next_insert_index: 0 };
-    localStorage.setItem("userList", JSON.stringify(userData));
-    alert("✅ List Saved");
-  }
-
-  function insertCode() {
-    const input = document.getElementById('insertInput').value.trim();
-    const parts = input.split(" ");
-    const code = parts[0], amount = parts[1];
-    if (!/^[A-Za-z0-9]{9}$/.test(code) || isNaN(amount)) {
-      document.getElementById('insertResult').innerHTML = `<p style="color:red;">❌ Invalid Format</p>`;
-      return;
-    }
-    let data = JSON.parse(localStorage.getItem("userList") || "{}");
-    if (!data.list || data.list.length === 0) {
-      document.getElementById('insertResult').innerHTML = `<p style="color:red;">⚠️ No list saved</p>`;
-      return;
-    }
-    let inserted = false;
-    for (let i = data.next_insert_index; i < data.list.length; i++) {
-      const item = data.list[i];
-      if (item.value !== "deleted" && !item.value.includes(" ")) {
-        item.value = `${code}   ${amount}   ${item.value}`;
-        data.next_insert_index = i + 1;
-        inserted = true;
-        break;
-      }
-    }
-    if (inserted) {
-      localStorage.setItem("userList", JSON.stringify(data));
-      document.getElementById('insertResult').innerHTML = `<p style="color:green;">✅ Inserted</p>`;
-    } else {
-      document.getElementById('insertResult').innerHTML = `<p style="color:orange;">⚠️ No space left</p>`;
+  let inserted=false;
+  for(let i=data.next_insert_index;i<data.list.length;i++){
+    const item=data.list[i];
+    if(item.value==='delete'||!item.value.includes(' ')){   // 'delete' line OR simple value
+      item.value = `${code}   ${amount}   ${item.value}`;
+      data.next_insert_index = i+1;
+      inserted=true;break;
     }
   }
+  localStorage.setItem('userList',JSON.stringify(data));
+  document.getElementById('insertResult').innerHTML =
+    inserted ? '<p style="color:green;">✅ Inserted</p>' :
+               '<p style="color:orange;">⚠️ No space left</p>';
+}
 
-  function convertMono() {
-    const lines = document.getElementById('monoInput').value.trim().split("\n");
-    const out = lines.filter(Boolean).map(c => `\`${c.trim()}\``).join("\n\n");
-    document.getElementById('monoOutput').innerText = out;
-  }
+/* ---------- MONO ---------- */
+function convertMono(){
+  const out = document.getElementById('monoInput')
+               .value.trim().split('\n').filter(Boolean)
+               .map(c=>`\\\`${c.trim()}\\\``).join('\n\n');
+  document.getElementById('monoOutput').innerText=out;
+}
 
-  function showList() {
-    const data = JSON.parse(localStorage.getItem("userList") || "{}");
-    if (!data.list || data.list.length === 0) {
-      document.getElementById('showOutput').innerText = "No list saved.";
-      return;
-    }
-    let out = `**${data.date}**\n\n****\n\n`;
-    data.list.forEach(item => {
-      let line = item.value.replace(/\b([A-Za-z0-9]{9})\b/g, "`$1`");
-      out += `${item.serial}.   ${line}\n\n`;
-    });
-    document.getElementById('showOutput').innerText = out;
-  }
+/* ---------- SHOW LIST ---------- */
+function showList(){
+  const data = JSON.parse(localStorage.getItem('userList')||'{}');
+  if(!data.list||!data.list.length){document.getElementById('showOutput').innerText='No list saved.';return;}
 
-  function resetList() {
-    localStorage.removeItem("userList");
-    userData = { list: [], date: '', next_insert_index: 0 };
-    alert("🧹 Reset Done");
-    showSection('show');
-  }
+  let out=`**${data.date}**\n\n****\n\n`;
+  data.list.forEach(it=>{
+    const line = it.value.replace(/\b([A-Za-z0-9]{9})\b/g,'`$1`'); // mono tick codes
+    out += `${it.serial}.   ${line}\n\n`;
+  });
+  document.getElementById('showOutput').innerText=out;
+}
 
-  function copyToClipboard(elemId, msgId) {
-    const text = document.getElementById(elemId).innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      document.getElementById(msgId).innerText = "✅ Copied!";
-      setTimeout(() => { document.getElementById(msgId).innerText = ""; }, 1500);
-    });
-  }
+/* ---------- RESET ---------- */
+function resetList(){
+  localStorage.removeItem('userList');
+  userData={list:[],date:'',next_insert_index:0};
+  alert('🧹 Reset Done');
+  showSection('show');
+}
+
+/* ---------- COPY ---------- */
+function copyToClipboard(elem,msg){
+  navigator.clipboard.writeText(document.getElementById(elem).innerText).then(()=>{
+    const div=document.getElementById(msg);div.innerText='✅ Copied!';
+    setTimeout(()=>div.innerText='',1500);
+  });
+}
 </script>
-
 </body>
 </html>
