@@ -100,7 +100,7 @@
 </head>
 <body>
 
-  <header>🚀 AmitTG Tool</header>
+  <header>🚀 AmitT </header>
 
   <div class="button-group">
     <button onclick="showSection('list')">📋 List</button>
@@ -115,7 +115,7 @@
     <h3>📋 Enter Date</h3>
     <input type="text" id="dateInput" placeholder="e.g., 25 June">
     <h3>Paste List</h3>
-    <textarea id="listInput" rows="10" placeholder="1. 2400 5\n2. Del\n3. 3500 4"></textarea>
+    <textarea id="listInput" rows="10" placeholder="1 1153 5\n2 del\n3 2480 4"></textarea>
     <button onclick="saveList()">✅ Save</button>
   </div>
 
@@ -197,8 +197,16 @@
       if (!state.list.length) return;
       const lines = [`**${state.date}**`, "", "****", ""];
       state.list.forEach(item => {
-        const val = item.value === "deleted" ? "deleted" : item.value.replace(/\b([A-Za-z0-9]{8,9})\b/, '`$1`');
-        lines.push(`${item.serial}.   ${val}`, "");
+        if (item.value === "deleted") {
+          lines.push(`${item.serial}.   deleted`, "");
+        } else {
+          const parts = item.value.trim().split(/\s+/);
+          const code = parts.find(p => /^[A-Za-z0-9]{8,9}$/.test(p)) || "";
+          const amount = parts.find(p => /^\d{3,6}$/.test(p)) || "";
+          const last = parts.at(-1);
+          const codeFormatted = code ? `\`${code}\`` : "";
+          lines.push(`${item.serial}.   ${codeFormatted}   ${amount}   ${last}`, "");
+        }
       });
       document.getElementById("showOutput").textContent = lines.join("\n");
     }
@@ -215,7 +223,8 @@
       for (let i = 0; i < state.list.length; i++) {
         const item = state.list[i];
         if (item.value !== "deleted" && !item.value.includes(" ")) {
-          state.list[i].value = `${code} ${amount} ${item.value}`;
+          const lastVal = item.value.trim().split(/\s+/).pop();
+          item.value = `${code} ${amount} ${lastVal}`;
           showPopup(`📥 Inserted at Serial ${item.serial}`);
           loadShowOutput();
           return;
