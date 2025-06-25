@@ -61,6 +61,7 @@
       display: none;
       animation: fade 2s forwards;
       font-weight: bold;
+      z-index: 999;
     }
     @keyframes fade {
       0% { opacity: 0; bottom: 10px; }
@@ -68,29 +69,48 @@
       90% { opacity: 1; bottom: 20px; }
       100% { opacity: 0; bottom: 30px; }
     }
+    #dateInput, #listInput, #confirmBtn {
+      display: none;
+    }
+    #loginSection {
+      max-width: 400px;
+      margin: auto;
+      margin-top: 100px;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>AmitXBhai Code Tool</h2>
 
-    <label>Insert Code (e.g., ABCD1234 2300):</label>
+  <!-- 🔐 Login Section -->
+  <div class="box" id="loginSection">
+    <h2>🔐 Login</h2>
+    <input type="text" id="usernameInput" placeholder="Enter your name..." />
+    <button onclick="saveLogin()">🚪 Login</button>
+  </div>
+
+  <!-- 🛠 Tool Section -->
+  <div class="box" id="toolSection" style="display:none;">
+    <h2>AmitXBhai Code Tool</h2>
+    <div><b>👤 User:</b> <span id="usernameShow"></span></div>
+
+    <label>Insert Code (8–9 digit) + Amount (e.g., ABCD1234 2300):</label>
     <input type="text" id="codeInput">
     <button onclick="insertCode()">➕ Insert</button>
 
-    <label>Date:</label>
-    <input type="text" id="dateInput" placeholder="e.g., 15 June">
+    <button onclick="startSaveList()">📋 List Save</button>
 
-    <label>List (e.g., 1. 2400 5):</label>
-    <textarea id="listInput" rows="6" placeholder="Enter list..."></textarea>
+    <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 15 June)">
+    <textarea id="listInput" rows="6" placeholder="📄 Paste your list..."></textarea>
+    <button id="confirmBtn" onclick="saveList()">💾 Confirm Save</button>
 
-    <button onclick="saveList()">💾 Save List</button>
     <button onclick="showList()">👀 Show</button>
 
     <div id="result" class="output"></div>
     <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyResult()">📋 Copy</button>
   </div>
 
+  <!-- ✅ Toast -->
   <div class="toast" id="toast"></div>
 
   <script>
@@ -100,19 +120,40 @@
       nextIndex: 0
     };
 
-    function showToast(msg, color = "#00c853") {
+    function showToast(msg, color = "#00c853", reload = false) {
       const toast = document.getElementById("toast");
       toast.innerText = msg;
       toast.style.background = color;
       toast.style.display = "block";
       setTimeout(() => {
         toast.style.display = "none";
+        if (reload) location.reload();
       }, 2000);
+    }
+
+    function saveLogin() {
+      const username = document.getElementById("usernameInput").value.trim();
+      if (!username) return showToast("❌ Username required!", "#ff1744");
+      localStorage.setItem("amit_user_name", username);
+      showToast("✅ Login Saved!");
+      setTimeout(() => location.reload(), 1500);
+    }
+
+    function startSaveList() {
+      document.getElementById("dateInput").style.display = "block";
+      document.getElementById("listInput").style.display = "block";
+      document.getElementById("confirmBtn").style.display = "inline-block";
+      showToast("📋 Now enter date and list...");
     }
 
     function saveList() {
       const date = document.getElementById("dateInput").value.trim();
       const lines = document.getElementById("listInput").value.trim().split("\n");
+
+      if (!date || lines.length === 0) {
+        showToast("❌ Date ya List missing!", "#ff1744");
+        return;
+      }
 
       let cleaned = [];
       for (let line of lines) {
@@ -136,7 +177,7 @@
       };
 
       localStorage.setItem("amit_user_data", JSON.stringify(userData));
-      showToast("✅ List saved!");
+      showToast("✅ List saved!", "#00c853", true);
     }
 
     function insertCode() {
@@ -153,7 +194,7 @@
           item.value = `${code}   ${number}   ${item.value}`;
           userData.nextIndex = i + 1;
           localStorage.setItem("amit_user_data", JSON.stringify(userData));
-          showToast(`✅ Inserted at serial ${item.serial}`);
+          showToast(`✅ Code inserted!`, "#00c853", true);
           return;
         }
       }
@@ -188,6 +229,15 @@
     }
 
     window.onload = () => {
+      const savedName = localStorage.getItem("amit_user_name");
+      if (!savedName) {
+        document.getElementById("loginSection").style.display = "block";
+        return;
+      }
+
+      document.getElementById("toolSection").style.display = "block";
+      document.getElementById("usernameShow").innerText = savedName;
+
       const saved = localStorage.getItem("amit_user_data");
       if (saved) userData = JSON.parse(saved);
     };
