@@ -2,179 +2,264 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>AmitTG - Code Inserter</title>
-
-  <!--  PWA  -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#00ffe7" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>AmitTG Tool</title>
   <style>
-    *{box-sizing:border-box}
-    body{font-family:'Segoe UI',sans-serif;background:#121212;color:#fff;margin:0;padding:10px}
-    header{display:flex;justify-content:space-between;align-items:center;background:#1f1f1f;padding:10px 15px;border-radius:12px;margin-bottom:15px}
-    header h2{font-size:20px;color:#00ffe7;margin:0}
-    .refresh-btn{background:#333;color:#00ffcc;border:none;padding:6px 12px;font-size:16px;border-radius:8px;cursor:pointer}
-    textarea,input{width:100%;padding:12px;margin-bottom:10px;background:#1e1e1e;border:1px solid #444;border-radius:10px;color:#fff;font-size:16px}
-    button{width:100%;padding:12px;margin:5px 0;background:linear-gradient(90deg,#00b894,#00cec9);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-    button:hover{opacity:.9}
-    .copy-btn{background:#0984e3}
-    .copied{text-align:center;color:#00ff99;margin-bottom:10px}
-    pre{background:#1e1e1e;border:1px solid #444;padding:10px;border-radius:10px;white-space:pre-wrap;font-size:14px;color:#e0e0e0}
-    .section{display:none}
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      color: #eee;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #00faff;
+    }
+
+    .button-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #222;
+      border: 1px solid #444;
+      color: #00faff;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00faff;
+      color: black;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 10px;
+      background: #1e1e1e;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-family: monospace;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px #000;
+    }
+
+    pre {
+      background: #111;
+      border-radius: 6px;
+      padding: 12px;
+      white-space: pre-wrap;
+      border: 1px solid #333;
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .copy-btn {
+      background: #00aa55;
+      color: white;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #toast {
+      position: fixed;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00cc66;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      opacity: 0;
+      transition: all 0.4s ease;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      bottom: 30px;
+      opacity: 1;
+    }
   </style>
 </head>
-
 <body>
-<header>
-  <h2>AmitTG Tool</h2>
-  <button class="refresh-btn" onclick="location.reload()">🔄</button>
-</header>
 
-<button onclick="showSection('list')">📋 Save List</button>
-<button onclick="showSection('insert')">🔁 Insert Code</button>
-<button onclick="showSection('mono')">🔤 Mono</button>
-<button onclick="showSection('show')">👀 Show</button>
-<button onclick="resetList()">♻️ Reset</button>
+<h2>✨ AmitTG Premium Tool</h2>
 
-<!--  LIST  -->
-<div id="listSection" class="section">
-  <h3>📅 Enter Date</h3>
-  <input id="dateInput" placeholder="e.g., 24 June" />
-  <h3>📄 List (1 per line)</h3>
-  <textarea id="listInput" rows="6" placeholder="1. 2400 5&#10;2. Del&#10;3. 3500 4"></textarea>
-  <button onclick="saveList()">✅ Save</button>
+<div class="button-bar">
+  <button onclick="startList()">📋 List</button>
+  <button onclick="showList()">👀 Show</button>
+  <button onclick="monoMode()">🔤 Mono</button>
+  <button onclick="insertMode()">➕ Insert</button>
+  <button onclick="resetList()">🔄 Reset</button>
 </div>
 
-<!--  INSERT  -->
-<div id="insertSection" class="section">
-  <h3>📝 Code + Amount</h3>
-  <input id="insertInput" placeholder="🧾 ABC123456 2300 likho yahan..." />
-  <button onclick="insertCode()">Insert</button>
-  <div id="insertResult"></div>
-</div>
-
-<!--  MONO  -->
-<div id="monoSection" class="section">
-  <h3>🔤 Mono Formatter</h3>
-  <textarea id="monoInput" rows="6" placeholder="ABC123456&#10;XYZ987654"></textarea>
-  <button onclick="convertMono()">Convert</button>
-  <pre id="monoOutput"></pre>
-  <button class="copy-btn" onclick="copyToClipboard('monoOutput','monoCopied')">📋 Copy</button>
-  <div class="copied" id="monoCopied"></div>
-</div>
-
-<!--  SHOW  -->
-<div id="showSection" class="section">
-  <h3>📋 Updated List</h3>
-  <pre id="showOutput">No list yet.</pre>
-  <button class="copy-btn" onclick="copyToClipboard('showOutput','showCopied')">📋 Copy</button>
-  <div class="copied" id="showCopied"></div>
-</div>
+<div id="section" class="card"></div>
+<div id="toast">✅ List Copied</div>
 
 <script>
-let userData = {list:[],date:'',next_insert_index:0};
+let userData = JSON.parse(localStorage.getItem("amit_data") || `{"list":[],"date":"","next":0}`);
 
-function showSection(id){
-  ['list','insert','mono','show'].forEach(sec=>{
-    document.getElementById(sec+'Section').style.display = (sec===id?'block':'none');
-  });
-  if(id==='show') showList();
+function save() {
+  localStorage.setItem("amit_data", JSON.stringify(userData));
 }
 
-/* ---------- SAVE LIST ---------- */
-function saveList(){
-  const date  = document.getElementById('dateInput').value.trim();
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+function startList() {
+  document.getElementById('section').innerHTML = `
+    <p><b>📅 Enter Date:</b></p>
+    <input id="dateInput" placeholder="e.g., 25 June" />
+    <p><b>📋 Paste Your List:</b></p>
+    <textarea id="listInput" rows="8" placeholder="1. 2400 5\n2. Del\n3. 3300 4"></textarea>
+    <button onclick="saveList()">✅ Save List</button>
+  `;
+}
+
+function saveList() {
+  const date = document.getElementById('dateInput').value.trim();
   const lines = document.getElementById('listInput').value.trim().split('\n');
   const cleaned = [];
 
-  lines.forEach(ln=>{
-    ln = ln.trim();
-    if(!ln) return;
-    const parts = ln.split('.');
-    const serial = parseInt(parts[0]);
-    const rest   = (parts[1]||'').trim();
-
-    if(/del/i.test(rest)){               // Del / Delete
-      cleaned.push({serial,value:'delete'});
-    }else{
-      const tokens = rest.split(/\s+/);
-      const last   = tokens[tokens.length-1];  // store only last number/word
-      cleaned.push({serial,value:last});
+  for (let line of lines) {
+    line = line.trim();
+    if (!line) continue;
+    const parts = line.split(/\s+/);
+    const serial = parseInt(parts[0].replace(".", ""));
+    if (line.toLowerCase().includes("del")) {
+      cleaned.push({ serial, value: "deleted" });
+    } else {
+      cleaned.push({ serial, value: parts[parts.length - 1] });
     }
-  });
+  }
 
-  userData = {list:cleaned,date,next_insert_index:0};
-  localStorage.setItem('userList',JSON.stringify(userData));
-  alert('✅ List Saved');
+  userData = { list: cleaned, date: date, next: 0 };
+  save();
+  toast("✅ List Saved");
+  insertMode();
 }
 
-/* ---------- INSERT CODE ---------- */
-function insertCode(){
-  const input = document.getElementById('insertInput').value.trim();
-  const [code,amount] = input.split(/\s+/);
-  if(!/^[A-Za-z0-9]{9}$/.test(code)||isNaN(amount)){
-    document.getElementById('insertResult').innerHTML = '<p style="color:red;">❌ Invalid Format</p>'; return;
-  }
-  let data = JSON.parse(localStorage.getItem('userList')||'{}');
-  if(!data.list||!data.list.length){
-    document.getElementById('insertResult').innerHTML = '<p style="color:red;">⚠️ No list saved</p>';return;
+function insertMode() {
+  document.getElementById('section').innerHTML = `
+    <p><b>➕ Enter Code + Amount (e.g., ABC123456 2300):</b></p>
+    <input id="codeInput" placeholder="e.g., ABC123456 2300" />
+    <button onclick="insertCode()">💾 Insert</button>
+  `;
+}
+
+function insertCode() {
+  const val = document.getElementById('codeInput').value.trim();
+  const parts = val.split(/\s+/);
+  if (parts.length !== 2 || parts[0].length !== 9 || isNaN(parts[1])) {
+    toast("❌ Format: ABC123456 2300");
+    return;
   }
 
-  let inserted=false;
-  for(let i=data.next_insert_index;i<data.list.length;i++){
-    const item=data.list[i];
-    if(item.value==='delete'||!item.value.includes(' ')){   // 'delete' line OR simple value
+  const [rawCode, amount] = parts;
+  const code = `\`${rawCode}\``;
+  let inserted = false;
+
+  for (let i = userData.next; i < userData.list.length; i++) {
+    const item = userData.list[i];
+    if (item.value !== "deleted" && !item.value.includes(" ")) {
       item.value = `${code}   ${amount}   ${item.value}`;
-      data.next_insert_index = i+1;
-      inserted=true;break;
+      userData.next = i + 1;
+      inserted = true;
+      break;
     }
   }
-  localStorage.setItem('userList',JSON.stringify(data));
-  document.getElementById('insertResult').innerHTML =
-    inserted ? '<p style="color:green;">✅ Inserted</p>' :
-               '<p style="color:orange;">⚠️ No space left</p>';
+
+  if (inserted) {
+    save();
+    toast("✅ Code Saved");
+    insertMode();
+  } else {
+    toast("⚠️ No space to insert");
+  }
 }
 
-/* ---------- MONO ---------- */
-function convertMono(){
-  const out = document.getElementById('monoInput')
-               .value.trim().split('\n').filter(Boolean)
-               .map(c=>`\\\`${c.trim()}\\\``).join('\n\n');
-  document.getElementById('monoOutput').innerText=out;
+function showList() {
+  if (!userData.list.length) {
+    document.getElementById('section').innerHTML = `<p>❌ No list found.</p>`;
+    return;
+  }
+
+  const date = userData.date;
+  let out = `**${date}**\n\n****\n\n`;
+  for (let item of userData.list) {
+    let val = item.value.replace(/([A-Za-z0-9]{9})/g, '`$1`');
+    out += `${item.serial}.   ${val}\n\n`;
+  }
+
+  document.getElementById('section').innerHTML = `
+    <pre id="showOutput">${out}</pre>
+    <button class="copy-btn" onclick="copyOutput()">📋 Copy List</button>
+  `;
 }
 
-/* ---------- SHOW LIST ---------- */
-function showList(){
-  const data = JSON.parse(localStorage.getItem('userList')||'{}');
-  if(!data.list||!data.list.length){document.getElementById('showOutput').innerText='No list saved.';return;}
+function monoMode() {
+  document.getElementById('section').innerHTML = `
+    <p><b>🔤 Paste your list:</b></p>
+    <textarea id="monoInput" rows="8" placeholder="Multiple lines..."></textarea>
+    <button onclick="formatMono()">✅ Format</button>
+  `;
+}
 
-  let out=`**${data.date}**\n\n****\n\n`;
-  data.list.forEach(it=>{
-    const line = it.value.replace(/\b([A-Za-z0-9]{9})\b/g,'`$1`'); // mono tick codes
-    out += `${it.serial}.   ${line}\n\n`;
+function formatMono() {
+  const raw = document.getElementById('monoInput').value.trim();
+  const lines = raw.split('\n').filter(l => l.trim());
+  const result = lines.map(line =>
+    line.replace(/([A-Za-z0-9]{9})/g, '`$1`')
+  ).join('\n\n');
+
+  document.getElementById('section').innerHTML = `
+    <pre id="showOutput">${result}</pre>
+    <button class="copy-btn" onclick="copyOutput()">📋 Copy List</button>
+  `;
+}
+
+function copyOutput() {
+  const text = document.getElementById("showOutput").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    toast("✅ List Copied");
   });
-  document.getElementById('showOutput').innerText=out;
 }
 
-/* ---------- RESET ---------- */
-function resetList(){
-  localStorage.removeItem('userList');
-  userData={list:[],date:'',next_insert_index:0};
-  alert('🧹 Reset Done');
-  showSection('show');
-}
-
-/* ---------- COPY ---------- */
-function copyToClipboard(elem,msg){
-  navigator.clipboard.writeText(document.getElementById(elem).innerText).then(()=>{
-    const div=document.getElementById(msg);div.innerText='✅ Copied!';
-    setTimeout(()=>div.innerText='',1500);
-  });
+function resetList() {
+  if (confirm("❓ Reset all data?")) {
+    userData = { list: [], date: "", next: 0 };
+    save();
+    document.getElementById('section').innerHTML = `<p>✅ List reset done.</p>`;
+  }
 }
 </script>
+
 </body>
 </html>
