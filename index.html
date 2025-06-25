@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AmitTG Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #1e88e5;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #1565c0;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 80px;
+      background: #00c853;
+      padding: 10px 20px;
+      border-radius: 20px;
+      animation: fadeInOut 2s forwards;
+      font-weight: bold;
+      z-index: 999;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(30px); }
+      20% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+
+    .login-box {
+      padding: 30px;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 80%;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      background: #43a047;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <!-- Login Box -->
+    <div class="login-box" id="loginBox">
+      <h2>Enter Your Username</h2>
+      <input type="text" id="usernameInput" placeholder="Your Name" />
+      <button onclick="saveUsername()">Login</button>
+    </div>
+
+    <!-- Main App -->
+    <div style="display:none;" id="mainApp">
+      <h2>Hello, <span id="user"></span> 👋</h2>
+
+      <div class="btn-group">
+        <button onclick="action('list')">📋 List</button>
+        <button onclick="action('show')">👀 Show</button>
+        <button onclick="action('insert')">📥 Insert</button>
+        <button onclick="action('mono')">🔤 Mono</button>
+        <button onclick="action('reset')">♻️ Reset</button>
+        <button onclick="action('add')">➕ Add</button>
+        <button onclick="action('addview')">📑 AddView</button>
+      </div>
+
+      <textarea id="outputBox" placeholder="Result will appear here..."></textarea>
+      <button class="copy-btn" onclick="copyText()">📋 Copy</button>
+    </div>
+  </div>
+
+  <script>
+    const usernameKey = "amit_tool_username";
+
+    function saveUsername() {
+      const name = document.getElementById("usernameInput").value.trim();
+      if (!name) return alert("Please enter username.");
+      localStorage.setItem(usernameKey, name);
+      loadApp();
+    }
+
+    function loadApp() {
+      const name = localStorage.getItem(usernameKey);
+      if (name) {
+        document.getElementById("user").textContent = name;
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+      }
+    }
+
+    function action(cmd) {
+      const output = document.getElementById("outputBox");
+      switch (cmd) {
+        case "list":
+          output.value = "Send date (e.g. 15 May)...";
+          break;
+        case "show":
+          output.value = "List:\n1. `CODE 1234`\n2. `CODE2 5678`";
+          break;
+        case "insert":
+          output.value = "Send code + number like `ABCD12345 2400`";
+          break;
+        case "mono":
+          output.value = "`CODE12345`\n\n`CODE67890`\n\n`CODE11111`";
+          break;
+        case "reset":
+          output.value = "";
+          break;
+        case "add":
+          output.value = "CODE AMOUNT\nCHANNEL\nTOTAL\nDATE\nID";
+          break;
+        case "addview":
+          output.value = "𝗡𝗨𝗠𝗕𝗘𝗥:  `ABCD12345` {2300}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  XYZ ✅\n𝗧𝗢𝗧𝗔𝗟: 10 ✅\n𝗗𝗔𝗧𝗘: 15 May ✅\nID: @user ✅";
+          break;
+      }
+      showPopup(`${cmd.toUpperCase()} triggered`);
+    }
+
+    function copyText() {
+      const text = document.getElementById("outputBox").value;
+      navigator.clipboard.writeText(text);
+      showPopup("📋 Copied to clipboard");
+    }
+
+    function showPopup(msg) {
+      const popup = document.createElement("div");
+      popup.className = "popup";
+      popup.textContent = msg;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 2000);
+    }
+
+    // Load on start
+    loadApp();
+  </script>
+</body>
+</html>
