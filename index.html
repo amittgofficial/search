@@ -117,7 +117,7 @@
 </div>
 
 <div id="section" class="card"></div>
-<div id="toast">✅ List Copied</div>
+<div id="toast">✅ Copied!</div>
 
 <script>
 let userData = JSON.parse(localStorage.getItem("amit_data") || `{"list":[],"date":"","next":0}`);
@@ -183,7 +183,7 @@ function insertCode() {
   }
 
   const [rawCode, amount] = parts;
-  const code = `\`${rawCode}\``;
+  const code = rawCode; // ✅ raw storage without backticks
   let inserted = false;
 
   for (let i = userData.next; i < userData.list.length; i++) {
@@ -214,8 +214,8 @@ function showList() {
   const date = userData.date;
   let out = `**${date}**\n\n****\n\n`;
   for (let item of userData.list) {
-    let val = item.value;
-out += `${item.serial}.   ${val}\n\n`;
+    let val = item.value.replace(/([A-Za-z0-9]{9})/g, '`$1`'); // ✅ wrap only on display
+    out += `${item.serial}.   ${val}\n\n`;
   }
 
   document.getElementById('section').innerHTML = `
