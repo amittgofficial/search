@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>AmitTG</title>
+  <title>AmitTG Tool</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -106,7 +106,7 @@
 </head>
 <body>
 
-<h2>✨ AmitTG</h2>
+<h2>✨ AmitTG Premium Tool</h2>
 
 <div class="button-bar">
   <button onclick="startList()">📋 List</button>
@@ -117,7 +117,7 @@
 </div>
 
 <div id="section" class="card"></div>
-<div id="toast">✅ Copied!</div>
+<div id="toast">✅ List Copied</div>
 
 <script>
 let userData = JSON.parse(localStorage.getItem("amit_data") || `{"list":[],"date":"","next":0}`);
@@ -183,7 +183,7 @@ function insertCode() {
   }
 
   const [rawCode, amount] = parts;
-  const code = rawCode; // ✅ raw storage without backticks
+  const code = `\`${rawCode}\``;
   let inserted = false;
 
   for (let i = userData.next; i < userData.list.length; i++) {
