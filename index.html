@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AmitXBhai Tool</title>
+  <title>AmitXBhai</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -42,7 +42,6 @@
       margin-top: 10px;
       border-radius: 8px;
     }
-    /* Unique Buttons */
     .btn-list { background: #8e24aa; color: #fff; }
     .btn-save { background: #2e7d32; color: #fff; }
     .btn-show { background: #1565c0; color: #fff; }
@@ -128,7 +127,6 @@
   <div class="code-center">
     <input type="text" id="codeInput" placeholder="Enter your code">
     <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
-    <button onclick="showList()" class="btn-show">👀 Show</button>
   </div>
 
   <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 15 June)">
@@ -141,7 +139,7 @@
   <button id="copyMono" class="btn-copy" onclick="copyMonoResult()">📋 Copy Mono</button>
 
   <div id="result" class="output"></div>
-  <button id="copyBtn" class="btn-copy" style="display:none;" onclick="copyResult()">📋 Copy</button>
+  <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -218,6 +216,7 @@
         userData.nextIndex = i + 1;
         localStorage.setItem("amit_user_data", JSON.stringify(userData));
         showToast(`✅ Code saved!`, "#00c853", true, true);
+        showList();
         return;
       }
     }
@@ -289,7 +288,10 @@
     document.getElementById("usernameShow").innerText = savedName;
 
     const saved = localStorage.getItem("amit_user_data");
-    if (saved) userData = JSON.parse(saved);
+    if (saved) {
+      userData = JSON.parse(saved);
+      showList();
+    }
   };
 </script>
 </body>
