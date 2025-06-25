@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png">
-<meta name="theme-color" content="#00faff">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>AmitTG</title>
@@ -261,13 +258,7 @@ function resetList() {
     document.getElementById('section').innerHTML = `<p>✅ List reset done.</p>`;
   }
 }
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(reg => console.log("SW Registered"))
-      .catch(err => console.error("SW registration failed", err));
-  }
-</script>
+  
 </script>
 
 </body>
