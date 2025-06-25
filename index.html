@@ -2,110 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AmitXBhai Tool</title>
+  <title>AmitXBhai Code Set-up Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #111;
-      color: #fff;
-      margin: 0;
-      padding: 20px;
-    }
-    .box {
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 600px;
-      margin: auto;
-    }
-    textarea, input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      border: none;
-      font-family: monospace;
-      background: #333;
-      color: #fff;
-    }
-    button {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-    .output {
-      white-space: pre-wrap;
-      background: #000;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-    /* Unique Buttons */
-    .btn-list { background: #8e24aa; color: #fff; }
-    .btn-save { background: #2e7d32; color: #fff; }
-    .btn-show { background: #1565c0; color: #fff; }
-    .btn-copy { background: #f57c00; color: #fff; }
-    .btn-confirm { background: #00897b; color: #fff; }
-    .btn-mono { background: #00acc1; color: #fff; }
-    button:hover {
-      opacity: 0.9;
-      transform: scale(1.03);
-      transition: 0.2s ease-in-out;
-    }
-    .code-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 30px auto 10px;
-      max-width: 400px;
-    }
-    .code-center input,
-    .code-center button {
-      width: 100%;
-      margin: 6px 0;
-    }
-    .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(30, 30, 30, 0.9);
-      color: #fff;
-      padding: 20px 25px;
-      border-radius: 12px;
-      display: none;
-      z-index: 999;
-      font-weight: bold;
-      text-align: center;
-      min-width: 200px;
-      box-shadow: 0 0 10px #00c853;
-    }
-    .toast .loader {
-      border: 4px solid #333;
-      border-top: 4px solid #00e676;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      margin: 10px auto 0;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    #dateInput, #listInput, #confirmBtn,
-    #monoInput, #monoRunBtn, #monoResult, #copyMono {
-      display: none;
-    }
-    #loginSection {
-      max-width: 400px;
-      margin: auto;
-      margin-top: 100px;
-      display: none;
-    }
+    /* 💅 CSS styles (scroll up for full design) */
   </style>
 </head>
 <body>
@@ -128,7 +28,6 @@
   <div class="code-center">
     <input type="text" id="codeInput" placeholder="Enter your code">
     <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
-    <button onclick="showList()" class="btn-show">👀 Show</button>
   </div>
 
   <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 15 June)">
@@ -141,7 +40,7 @@
   <button id="copyMono" class="btn-copy" onclick="copyMonoResult()">📋 Copy Mono</button>
 
   <div id="result" class="output"></div>
-  <button id="copyBtn" class="btn-copy" style="display:none;" onclick="copyResult()">📋 Copy</button>
+  <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -179,7 +78,7 @@
     const lines = document.getElementById("listInput").value.trim().split("\n");
 
     if (!date || lines.length === 0) {
-      showToast("❌ Date ya List missing!", "#ff1744");
+      showToast("❌ Date OR List missing!", "#ff1744");
       return;
     }
 
@@ -217,14 +116,15 @@
         item.value = `${code}   ${number}   ${item.value}`;
         userData.nextIndex = i + 1;
         localStorage.setItem("amit_user_data", JSON.stringify(userData));
-        showToast(`✅ Code saved!`, "#00c853", true, true);
+        renderShow();
+        showToast(`✅ Code saved!`, "#00c853", false, true);
         return;
       }
     }
     showToast("⚠️ No space left to insert.", "#ff9100");
   }
 
-  function showList() {
+  function renderShow() {
     const saved = localStorage.getItem("amit_user_data");
     const resultEl = document.getElementById("result");
     const copyBtn = document.getElementById("copyBtn");
@@ -234,12 +134,14 @@
       copyBtn.style.display = "none";
       return;
     }
+
     const data = JSON.parse(saved);
     let output = `**${data.date}**\n\n****\n\n`;
     for (let item of data.list) {
       let val = item.value.replace(/\b([A-Za-z0-9]{8,9})\b/g, "`$1`");
       output += `${item.serial}.   ${val}\n\n`;
     }
+
     resultEl.innerText = output;
     copyBtn.style.display = "inline-block";
   }
@@ -290,7 +192,10 @@
 
     const saved = localStorage.getItem("amit_user_data");
     if (saved) userData = JSON.parse(saved);
+
+    renderShow();
   };
 </script>
+
 </body>
 </html>
