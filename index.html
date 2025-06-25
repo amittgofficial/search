@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AmitXBhai's Tool</title>
+  <title>AmitXBhai Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -35,7 +35,8 @@
       background: #00c853;
       color: #fff;
       border: none;
-      margin-right: 10px;
+      margin: 6px 4px 6px 0;
+      cursor: pointer;
     }
     .output {
       white-space: pre-wrap;
@@ -44,11 +45,38 @@
       margin-top: 10px;
       border-radius: 8px;
     }
+    .copy-btn {
+      margin-top: 10px;
+      background: #1565c0;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00c853;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: none;
+      animation: fade 2s forwards;
+      font-weight: bold;
+    }
+    @keyframes fade {
+      0% { opacity: 0; bottom: 10px; }
+      10% { opacity: 1; bottom: 20px; }
+      90% { opacity: 1; bottom: 20px; }
+      100% { opacity: 0; bottom: 30px; }
+    }
   </style>
 </head>
 <body>
   <div class="box">
     <h2>AmitXBhai Code Tool</h2>
+
+    <label>Insert Code (e.g., ABCD1234 2300):</label>
+    <input type="text" id="codeInput">
+    <button onclick="insertCode()">➕ Insert</button>
 
     <label>Date:</label>
     <input type="text" id="dateInput" placeholder="e.g., 15 June">
@@ -57,15 +85,13 @@
     <textarea id="listInput" rows="6" placeholder="Enter list..."></textarea>
 
     <button onclick="saveList()">💾 Save List</button>
-
-    <label>Insert Code (e.g., ABCD12345 2300):</label>
-    <input type="text" id="codeInput">
-
-    <button onclick="insertCode()">➕ Insert</button>
     <button onclick="showList()">👀 Show</button>
 
     <div id="result" class="output"></div>
+    <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyResult()">📋 Copy</button>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script>
     let userData = {
@@ -73,6 +99,16 @@
       list: [],
       nextIndex: 0
     };
+
+    function showToast(msg, color = "#00c853") {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.style.background = color;
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 2000);
+    }
 
     function saveList() {
       const date = document.getElementById("dateInput").value.trim();
@@ -100,14 +136,14 @@
       };
 
       localStorage.setItem("amit_user_data", JSON.stringify(userData));
-      alert("✅ List saved.");
+      showToast("✅ List saved!");
     }
 
     function insertCode() {
       const val = document.getElementById("codeInput").value.trim();
       const [code, number] = val.split(/\s+/);
-      if (!code || !number || code.length !== 9 || isNaN(number)) {
-        alert("❌ Format should be like: ABC123456 2300");
+      if (!code || !number || (code.length !== 8 && code.length !== 9) || isNaN(number)) {
+        showToast("❌ Format: ABC123456 2300", "#ff1744");
         return;
       }
 
@@ -117,29 +153,40 @@
           item.value = `${code}   ${number}   ${item.value}`;
           userData.nextIndex = i + 1;
           localStorage.setItem("amit_user_data", JSON.stringify(userData));
-          alert(`✅ Inserted at serial ${item.serial}`);
+          showToast(`✅ Inserted at serial ${item.serial}`);
           return;
         }
       }
-      alert("⚠️ No space left to insert.");
+      showToast("⚠️ No space left to insert.", "#ff9100");
     }
 
     function showList() {
       const saved = localStorage.getItem("amit_user_data");
+      const resultEl = document.getElementById("result");
+      const copyBtn = document.getElementById("copyBtn");
+
       if (!saved) {
-        document.getElementById("result").innerText = "No data.";
+        resultEl.innerText = "No data.";
+        copyBtn.style.display = "none";
         return;
       }
       const data = JSON.parse(saved);
       let output = `**${data.date}**\n\n****\n\n`;
       for (let item of data.list) {
-        let val = item.value.replace(/\b([A-Za-z0-9]{9})\b/g, "`$1`");
+        let val = item.value.replace(/\b([A-Za-z0-9]{8,9})\b/g, "`$1`");
         output += `${item.serial}.   ${val}\n\n`;
       }
-      document.getElementById("result").innerText = output;
+      resultEl.innerText = output;
+      copyBtn.style.display = "inline-block";
     }
 
-    // Auto-load on page open
+    function copyResult() {
+      const text = document.getElementById("result").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("📋 Copied!");
+      });
+    }
+
     window.onload = () => {
       const saved = localStorage.getItem("amit_user_data");
       if (saved) userData = JSON.parse(saved);
