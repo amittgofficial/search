@@ -2,225 +2,148 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>❤️‍🔥AmitTG❤️‍🔥</title>
+  <title>AmitXBhai's Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --bg-dark: #0f172a;
-      --bg-light: #f1f5f9;
-      --text-dark: #e2e8f0;
-      --text-light: #1e293b;
-      --accent: linear-gradient(135deg, #6366f1, #8b5cf6);
-    }
-
     body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      transition: background 0.4s, color 0.4s;
-    }
-
-    .light {
-      background: var(--bg-light);
-      color: var(--text-light);
-    }
-
-    h1 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      background: var(--accent);
-      border: none;
-      padding: 12px 24px;
-      margin: 10px;
-      border-radius: 12px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
       padding: 20px;
-      margin-top: 20px;
-      width: 100%;
+    }
+    .box {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
       max-width: 600px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 0.3s ease;
+      margin: auto;
     }
-
     textarea, input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      margin-top: 10px;
-      border-radius: 10px;
-      font-size: 16px;
-      border: none;
-      resize: vertical;
-    }
-
-    #output, #monoOutput {
-      white-space: pre-wrap;
-      margin-top: 15px;
-      text-align: left;
-    }
-
-    #toggleMode {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      font-size: 18px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      color: white;
-    }
-
-    .light #toggleMode {
-      color: black;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .popup {
-      background: #10b981;
-      padding: 8px 16px;
       border-radius: 8px;
-      margin-top: 12px;
-      animation: fadeIn 1s ease;
+      margin-bottom: 10px;
+      border: none;
+      font-family: monospace;
+      background: #333;
+      color: #fff;
+    }
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: #00c853;
+      color: #fff;
+      border: none;
+      margin-right: 10px;
+    }
+    .output {
+      white-space: pre-wrap;
+      background: #000;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <button id="toggleMode" onclick="toggleTheme()">🌙</button>
-  <h1>✨ AmitTG ✨</h1>
+  <div class="box">
+    <h2>AmitXBhai Code Tool</h2>
 
-  <button class="btn" onclick="showSection('list')">➕ Add List</button>
-  <button class="btn" onclick="showSection('code')">🔠 Add Code</button>
-  <button class="btn" onclick="showSection('show')">👁 Show</button>
-  <button class="btn" onclick="showSection('mono')">🧾 Mono Code</button>
+    <label>Date:</label>
+    <input type="text" id="dateInput" placeholder="e.g., 15 June">
 
-  <!-- Add List -->
-  <div class="section" id="listSection">
-    <input type="text" id="listDate" placeholder="Enter Date (e.g. 01 June)">
-    <textarea id="listInput" placeholder="Paste your list here..."></textarea>
-    <button class="btn" onclick="saveList()">💾 Save</button>
-    <div id="savePopup" class="popup" style="display:none;">✅ List saved!</div>
-  </div>
+    <label>List (e.g., 1. 2400 5):</label>
+    <textarea id="listInput" rows="6" placeholder="Enter list..."></textarea>
 
-  <!-- Add Code -->
-  <div class="section" id="codeSection">
-    <input type="text" id="codeInput" placeholder="Enter CODE (8–9 letters)">
-    <input type="text" id="amountInput" placeholder="Enter AMOUNT (e.g. 2300)">
-    <button class="btn" onclick="insertCode()">➕ Insert Code</button>
-  </div>
+    <button onclick="saveList()">💾 Save List</button>
 
-  <!-- Show -->
-  <div class="section" id="showSection">
-    <div id="output"></div>
-    <button class="btn" onclick="copyOutput()">📋 Copy</button>
-  </div>
+    <label>Insert Code (e.g., ABCD12345 2300):</label>
+    <input type="text" id="codeInput">
 
-  <!-- Mono -->
-  <div class="section" id="monoSection">
-    <textarea id="monoInput" placeholder="Paste your list here..."></textarea>
-    <button class="btn" onclick="convertMono()">✅ Convert</button>
-    <div id="monoOutput"></div>
-    <button class="btn" onclick="copyMono()">📋 Copy</button>
+    <button onclick="insertCode()">➕ Insert</button>
+    <button onclick="showList()">👀 Show</button>
+
+    <div id="result" class="output"></div>
   </div>
 
   <script>
-    let listData = [];
-    let insertIndex = 0;
-
-    function toggleTheme() {
-      document.body.classList.toggle('light');
-    }
-
-    function showSection(name) {
-      document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-      document.getElementById(name + 'Section').style.display = 'flex';
-    }
+    let userData = {
+      date: '',
+      list: [],
+      nextIndex: 0
+    };
 
     function saveList() {
-      const input = document.getElementById('listInput').value.trim();
-      const lines = input.split('\n').filter(Boolean);
-      listData = lines.map(line => {
-        const parts = line.trim().split(/\s+/);
-        if (parts[1]?.toLowerCase() === 'del' || parts[1]?.toLowerCase() === 'delete') {
-          return `${parts[0]} delete`;
-        } else {
-          return `${parts[0]} ${parts[2]}`;
+      const date = document.getElementById("dateInput").value.trim();
+      const lines = document.getElementById("listInput").value.trim().split("\n");
+
+      let cleaned = [];
+      for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+        let parts = line.split(/\s+/);
+        let serial = parseInt(parts[0]);
+        if (!isNaN(serial)) {
+          if (line.toLowerCase().includes("del")) {
+            cleaned.push({ serial, value: "deleted" });
+          } else {
+            cleaned.push({ serial, value: parts[parts.length - 1] });
+          }
         }
-      });
-      insertIndex = 0;
-      document.getElementById('savePopup').style.display = 'block';
-      setTimeout(() => {
-        document.getElementById('savePopup').style.display = 'none';
-      }, 2000);
+      }
+
+      userData = {
+        date,
+        list: cleaned,
+        nextIndex: 0
+      };
+
+      localStorage.setItem("amit_user_data", JSON.stringify(userData));
+      alert("✅ List saved.");
     }
 
     function insertCode() {
-      const code = document.getElementById('codeInput').value.trim();
-      const amount = document.getElementById('amountInput').value.trim();
-      for (let i = insertIndex; i < listData.length; i++) {
-        if (!listData[i].includes('delete')) {
-          const parts = listData[i].split(' ');
-          listData[i] = `${parts[0]} \`${code}\` ${amount} ${parts[1]}`;
-          insertIndex = i + 1;
-          break;
+      const val = document.getElementById("codeInput").value.trim();
+      const [code, number] = val.split(/\s+/);
+      if (!code || !number || code.length !== 9 || isNaN(number)) {
+        alert("❌ Format should be like: ABC123456 2300");
+        return;
+      }
+
+      for (let i = userData.nextIndex; i < userData.list.length; i++) {
+        let item = userData.list[i];
+        if (item.value !== "deleted" && !item.value.includes(" ")) {
+          item.value = `${code}   ${number}   ${item.value}`;
+          userData.nextIndex = i + 1;
+          localStorage.setItem("amit_user_data", JSON.stringify(userData));
+          alert(`✅ Inserted at serial ${item.serial}`);
+          return;
         }
       }
+      alert("⚠️ No space left to insert.");
     }
 
-    function copyOutput() {
-      const text = listData.map(line => line.trim()).join('\n\n');
-      navigator.clipboard.writeText(text);
-      alert("✅ List copied!");
+    function showList() {
+      const saved = localStorage.getItem("amit_user_data");
+      if (!saved) {
+        document.getElementById("result").innerText = "No data.";
+        return;
+      }
+      const data = JSON.parse(saved);
+      let output = `**${data.date}**\n\n****\n\n`;
+      for (let item of data.list) {
+        let val = item.value.replace(/\b([A-Za-z0-9]{9})\b/g, "`$1`");
+        output += `${item.serial}.   ${val}\n\n`;
+      }
+      document.getElementById("result").innerText = output;
     }
 
-    function convertMono() {
-      const input = document.getElementById('monoInput').value.trim();
-      const lines = input.split('\n').filter(Boolean);
-      const formatted = lines.map(line => {
-        const parts = line.trim().split(/\s+/);
-        if (parts[1] && parts[1].toLowerCase() !== 'delete') {
-          parts[1] = '`' + parts[1] + '`';
-        }
-        return parts.join(' ');
-      });
-      document.getElementById('monoOutput').innerText = formatted.join('\n\n');
-    }
-
-    function copyMono() {
-      const text = document.getElementById('monoOutput').innerText;
-      navigator.clipboard.writeText(text);
-      alert("✅ Mono list copied!");
-    }
-
-    document.getElementById('showSection').addEventListener('click', () => {
-      document.getElementById('output').innerText = listData.join('\n\n');
-    });
+    // Auto-load on page open
+    window.onload = () => {
+      const saved = localStorage.getItem("amit_user_data");
+      if (saved) userData = JSON.parse(saved);
+    };
   </script>
 </body>
 </html>
