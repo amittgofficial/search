@@ -3,226 +3,287 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AmitXbhai</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <title>AmitTG Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0f111a;
+      --card: #1a1c2b;
+      --accent: #4cd964;
+      --text: #ffffff;
+    }
     body {
-      font-family: 'Roboto', sans-serif;
       margin: 0;
-      padding: 0;
-      background: #121212;
-      color: #fff;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
+      padding: 1rem;
     }
-    .container {
-      padding: 20px;
-      width: 100%;
-      max-width: 500px;
+    header {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
     }
-    .btn-group {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
     }
     button {
-      background-color: #1e88e5;
+      background: var(--accent);
+      color: #000;
       border: none;
-      padding: 12px;
+      padding: 10px 20px;
+      font-size: 1rem;
       border-radius: 10px;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      font-weight: 600;
+      transition: 0.2s ease;
     }
     button:hover {
-      background-color: #1565c0;
+      transform: scale(1.05);
+    }
+    .card {
+      background: var(--card);
+      padding: 1rem;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
     textarea, input {
       width: 100%;
+      padding: 12px;
       border-radius: 10px;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
+      border: none;
+      margin-top: 10px;
+      font-family: monospace;
+      font-size: 1rem;
+      background: #2a2c3a;
+      color: white;
+    }
+    pre {
+      background: #181a27;
+      padding: 1rem;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      color: var(--text);
+      margin-top: 1rem;
     }
     .popup {
       position: fixed;
-      bottom: 80px;
-      background: #00c853;
-      padding: 10px 20px;
-      border-radius: 20px;
-      animation: fadeInOut 2s forwards;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: black;
+      padding: 12px 20px;
+      border-radius: 8px;
       font-weight: bold;
-      z-index: 999;
+      display: none;
+      animation: fadeInOut 2s ease-in-out;
     }
     @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateY(30px); }
-      20% { opacity: 1; transform: translateY(0); }
-      80% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-30px); }
-    }
-    .copy-btn {
-      margin-top: 10px;
-      background: #43a047;
-    }
-    .login-box {
-      padding: 30px;
-      text-align: center;
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="app">
-    <div class="login-box" id="loginBox">
-      <h2>Enter Your Username</h2>
-      <input type="text" id="usernameInput" placeholder="Your Name" />
-      <button onclick="saveUsername()">Login</button>
-    </div>
 
-    <div style="display:none;" id="mainApp">
-      <h2>Hello, <span id="user"></span> 👋</h2>
+  <header>🚀 AmitTG Tool</header>
 
-      <div class="btn-group">
-        <button onclick="action('list')">📋 List</button>
-        <button onclick="action('show')">👀 Show</button>
-        <button onclick="action('insert')">📥 Insert</button>
-        <button onclick="action('mono')">🔤 Mono</button>
-        <button onclick="action('reset')">♻️ Reset</button>
-        <button onclick="action('add')">➕ Add</button>
-        <button onclick="action('addview')">📑 AddView</button>
-      </div>
-
-      <div id="actionContent"></div>
-    </div>
+  <div class="button-group">
+    <button onclick="showSection('list')">📋 List</button>
+    <button onclick="showSection('mono')">🔤 Mono</button>
+    <button onclick="showSection('show')">👀 Show</button>
+    <button onclick="showSection('insert')">📥 Insert</button>
+    <button onclick="showSection('add')">➕ Add</button>
+    <button onclick="resetList()">🔄 Reset</button>
   </div>
 
+  <div id="list" class="card" style="display:none;">
+    <h3>📋 Enter Date</h3>
+    <input type="text" id="dateInput" placeholder="e.g., 25 June">
+    <h3>Paste List</h3>
+    <textarea id="listInput" rows="10" placeholder="1. 2400 5\n2. Del\n3. 3500 4"></textarea>
+    <button onclick="saveList()">✅ Save</button>
+  </div>
+
+  <div id="mono" class="card" style="display:none;">
+    <h3>🔤 Mono Code List</h3>
+    <textarea id="monoInput" rows="8" placeholder="ABC123456\nXYZ987654"></textarea>
+    <button onclick="generateMono()">✨ Format</button>
+    <pre id="monoOutput"></pre>
+    <button onclick="copyToClipboard('monoOutput')">📋 Copy</button>
+  </div>
+
+  <div id="show" class="card" style="display:none;">
+    <h3>👀 Show List</h3>
+    <pre id="showOutput">(No data yet)</pre>
+    <button onclick="copyToClipboard('showOutput')">📋 Copy</button>
+  </div>
+
+  <div id="insert" class="card" style="display:none;">
+    <h3>📥 Insert Code + Amount</h3>
+    <input type="text" id="insertInput" placeholder="Enter CODE AMOUNT (e.g. ABC123456 2400)">
+    <button onclick="insertIntoList()">📥 Insert</button>
+  </div>
+
+  <div id="add" class="card" style="display:none;">
+    <h3>➕ Add Details (5 lines)</h3>
+    <textarea id="addInput" rows="6" placeholder="CODE AMOUNT\nCHANNEL\nTOTAL\nDATE\nID"></textarea>
+    <button onclick="generateAdd()">✅ Generate</button>
+    <pre id="addOutput"></pre>
+    <button onclick="copyToClipboard('addOutput')">📋 Copy</button>
+  </div>
+
+  <div id="popup" class="popup"></div>
+
   <script>
-    const usernameKey = "amit_tool_username";
-    function saveUsername() {
-      const name = document.getElementById("usernameInput").value.trim();
-      if (!name) return alert("Please enter username.");
-      localStorage.setItem(usernameKey, name);
-      loadApp();
+    const state = { list: [], date: "" };
+
+    function showSection(id) {
+      document.querySelectorAll('.card').forEach(div => div.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      if (id === "show") loadShowOutput();
     }
-    function loadApp() {
-      const name = localStorage.getItem(usernameKey);
-      if (name) {
-        document.getElementById("user").textContent = name;
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("mainApp").style.display = "block";
+
+    function saveList() {
+      const date = document.getElementById("dateInput").value;
+      const lines = document.getElementById("listInput").value.trim().split("\n");
+      const cleaned = [];
+
+      lines.forEach(ln => {
+        ln = ln.trim();
+        if (!ln) return;
+        const parts = ln.split(/\s+/);
+        const serial = parseInt(parts[0]);
+        if (ln.toLowerCase().includes("del") || parts.length === 1) {
+          cleaned.push({ serial, value: "deleted" });
+        } else {
+          cleaned.push({ serial, value: parts.slice(1).join(" ") });
+        }
+      });
+
+      state.list = cleaned;
+      state.date = date;
+      showPopup("✅ List saved!");
+    }
+
+    function generateMono() {
+      const lines = document.getElementById("monoInput").value.trim().split("\n");
+      const output = lines
+        .filter(line => line.trim())
+        .map(code => {
+          const match = code.trim().match(/\b([A-Za-z0-9]{8,9})\b/);
+          return match ? `\`${match[1]}\`` : code;
+        })
+        .join("\n\n");
+      document.getElementById("monoOutput").textContent = output;
+      showPopup("✅ Mono formatted!");
+    }
+
+    function loadShowOutput() {
+      if (!state.list.length) return;
+      const lines = [`**${state.date}**`, "", "****", ""];
+      state.list.forEach(item => {
+        const val = item.value === "deleted" ? "deleted" : item.value.replace(/\b([A-Za-z0-9]{8,9})\b/, '`$1`');
+        lines.push(`${item.serial}.   ${val}`, "");
+      });
+      document.getElementById("showOutput").textContent = lines.join("\n");
+    }
+
+    function insertIntoList() {
+      const input = document.getElementById("insertInput").value.trim();
+      const parts = input.split(/\s+/);
+      if (parts.length !== 2 || parts[0].length < 8 || isNaN(parts[1])) {
+        return showPopup("❌ Format: CODE AMOUNT (e.g., ABC123456 2400)");
       }
+
+      const [code, amount] = parts;
+
+      for (let i = 0; i < state.list.length; i++) {
+        const item = state.list[i];
+        if (item.value !== "deleted" && !item.value.includes(" ")) {
+          state.list[i].value = `${code} ${amount} ${item.value}`;
+          showPopup(`📥 Inserted at Serial ${item.serial}`);
+          loadShowOutput();
+          return;
+        }
+      }
+
+      showPopup("❌ No available slot found.");
     }
+
+    function generateAdd() {
+      const lines = document.getElementById("addInput").value.trim().split("\n");
+      if (lines.length !== 5) {
+        return showPopup("❌ Enter exactly 5 lines");
+      }
+
+      const [line1, channel, total, date, userId] = lines;
+      const match = line1.match(/^(\w{6,})\s+(\d+)$/);
+      if (!match) {
+        return showPopup("❌ First line should be: CODE AMOUNT");
+      }
+
+      const [_, code, amount] = match;
+      const formattedCode = `\`${code}\` {${amount}}`;
+
+      const out = `\`\`\`
+𝗡𝗨𝗠𝗕𝗘𝗥:  ${formattedCode}
+
+𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  ${channel} ✅
+
+𝗧𝗢𝗧𝗔𝗟 𝗡𝗨𝗠𝗕𝗘𝗥 :-  ${total} ✅
+
+𝗗𝗔𝗧𝗘 :- ${date} ✅
+
+𝗣𝗘𝗡𝗗𝗜𝗡𝗚 𝗣𝗔𝗬𝗠𝗘𝗡𝗧:-
+
+ID:- ${userId} ✅
+\`\`\``;
+
+      document.getElementById("addOutput").textContent = out;
+      showPopup("✅ Details generated");
+    }
+
+    function copyToClipboard(id) {
+      const el = document.getElementById(id);
+      const text = el.innerText || el.textContent;
+      navigator.clipboard.writeText(text).then(() => showPopup("📋 Copied!"));
+    }
+
+    function resetList() {
+      state.list = [];
+      state.date = "";
+      ["listInput", "dateInput", "monoInput", "monoOutput", "showOutput", "insertInput", "addInput", "addOutput"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.tagName === "PRE") el.textContent = "(No data yet)";
+        else el.value = "";
+      });
+      showPopup("🔄 Reset successful");
+    }
+
     function showPopup(msg) {
-      const popup = document.createElement("div");
-      popup.className = "popup";
+      const popup = document.getElementById("popup");
       popup.textContent = msg;
-      document.body.appendChild(popup);
-      setTimeout(() => popup.remove(), 2000);
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 2000);
     }
-
-    function action(cmd) {
-      const content = document.getElementById("actionContent");
-      content.innerHTML = "";
-      const output = document.createElement("textarea");
-      output.id = "outputBox";
-      output.placeholder = "Result will appear here...";
-      content.appendChild(output);
-
-      const copyBtn = document.createElement("button");
-      copyBtn.textContent = "📋 Copy";
-      copyBtn.className = "copy-btn";
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(output.value);
-        showPopup("📋 Copied!");
-      };
-
-      if (cmd === "list") {
-        const date = document.createElement("input");
-        date.placeholder = "📅 Enter Date (e.g. 14 May)";
-        const list = document.createElement("textarea");
-        list.placeholder = "📝 Enter Your List (serial format)";
-        const save = document.createElement("button");
-        save.textContent = "💾 Save";
-        save.onclick = () => {
-          const lines = list.value.trim().split("\n");
-          const cleaned = lines.map(l => {
-            const parts = l.trim().split(" ");
-            const last = parts.at(-1);
-            return /del/i.test(l) ? `${parts[0]}   deleted` : `${parts[0]}   \`${last}\``;
-          });
-          output.value = `**${date.value.trim()}**\n\n` + cleaned.join("\n");
-          showPopup("✅ List Saved");
-        };
-        content.append(date, list, save, output, copyBtn);
-
-      } else if (cmd === "insert") {
-        const code = document.createElement("input");
-        code.placeholder = "🔢 Code (8–9 digit) + Amount";
-        const save = document.createElement("button");
-        save.textContent = "💾 Save";
-        save.onclick = () => {
-          const val = code.value.trim().split(" ");
-          if (val.length !== 2 || val[0].length < 8 || val[0].length > 9) {
-            showPopup("❌ Invalid Format");
-            return;
-          }
-          output.value = `Inserted: \`${val[0]}\` with amount ${val[1]}`;
-          showPopup("✅ Code Inserted");
-        };
-        content.append(code, save, output, copyBtn);
-
-      } else if (cmd === "mono") {
-        const codes = document.createElement("textarea");
-        codes.placeholder = "🔤 Enter codes with gaps";
-        const save = document.createElement("button");
-        save.textContent = "💾 Save";
-        save.onclick = () => {
-          const lines = codes.value.trim().split("\n").filter(Boolean);
-          const formatted = lines.map(l => `\`${l.trim()}\``).join("\n\n");
-          output.value = formatted;
-          showPopup("✅ Mono Saved");
-        };
-        content.append(codes, save, output, copyBtn);
-
-      } else if (cmd === "reset") {
-        output.value = "List reset successfully.";
-        content.append(output, copyBtn);
-        showPopup("♻️ Reset");
-
-      } else if (cmd === "add") {
-        const lines = ["CODE 2300", "CHANNEL", "TOTAL", "DATE", "ID"].map(ph => {
-          const inp = document.createElement("input");
-          inp.placeholder = ph;
-          return inp;
-        });
-        const save = document.createElement("button");
-        save.textContent = "💾 Save";
-        save.onclick = () => {
-          const [c, ch, t, d, id] = lines.map(i => i.value.trim());
-          if (!c || !ch || !t || !d || !id) {
-            showPopup("❌ Fill all 5 lines");
-            return;
-          }
-          const [code, amount] = c.split(" ");
-          output.value = `𝗡𝗨𝗠𝗕𝗘𝗥:  \`${code}\` {${amount}}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  ${ch} ✅\n𝗧𝗢𝗧𝗔𝗟: ${t} ✅\n𝗗𝗔𝗧𝗘: ${d} ✅\nID: ${id} ✅`;
-          showPopup("✅ Add Saved");
-        };
-        content.append(...lines, save, output, copyBtn);
-
-      } else if (cmd === "show" || cmd === "addview") {
-        output.value = cmd === "show"
-          ? "**15 June**\n\n1.   `CODE12345`\n2.   `CODE67890`"
-          : `𝗡𝗨𝗠𝗕𝗘𝗥:  \`ABCD12345\` {2300}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  XYZ ✅\n𝗧𝗢𝗧𝗔𝗟: 10 ✅\n𝗗𝗔𝗧𝗘: 15 May ✅\nID: @user ✅`;
-        content.append(output, copyBtn);
-        showPopup(`📤 ${cmd.toUpperCase()} Loaded`);
-      }
-    }
-
-    loadApp();
   </script>
+
 </body>
 </html>
