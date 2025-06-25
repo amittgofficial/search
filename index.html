@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AmitTG Tool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AmitXbhai</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <style>
     body {
@@ -17,20 +17,17 @@
       align-items: center;
       min-height: 100vh;
     }
-
     .container {
       padding: 20px;
       width: 100%;
       max-width: 500px;
     }
-
     .btn-group {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       margin-bottom: 20px;
     }
-
     button {
       background-color: #1e88e5;
       border: none;
@@ -42,20 +39,16 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
     button:hover {
       background-color: #1565c0;
     }
-
-    textarea {
+    textarea, input {
       width: 100%;
-      height: 200px;
       border-radius: 10px;
       padding: 10px;
       font-size: 16px;
-      margin-top: 10px;
+      margin-bottom: 10px;
     }
-
     .popup {
       position: fixed;
       bottom: 80px;
@@ -66,43 +59,30 @@
       font-weight: bold;
       z-index: 999;
     }
-
     @keyframes fadeInOut {
       0% { opacity: 0; transform: translateY(30px); }
       20% { opacity: 1; transform: translateY(0); }
       80% { opacity: 1; }
       100% { opacity: 0; transform: translateY(-30px); }
     }
-
-    .login-box {
-      padding: 30px;
-      text-align: center;
-    }
-
-    input[type="text"] {
-      padding: 12px;
-      width: 80%;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-
     .copy-btn {
       margin-top: 10px;
       background: #43a047;
+    }
+    .login-box {
+      padding: 30px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container" id="app">
-    <!-- Login Box -->
     <div class="login-box" id="loginBox">
       <h2>Enter Your Username</h2>
       <input type="text" id="usernameInput" placeholder="Your Name" />
       <button onclick="saveUsername()">Login</button>
     </div>
 
-    <!-- Main App -->
     <div style="display:none;" id="mainApp">
       <h2>Hello, <span id="user"></span> 👋</h2>
 
@@ -116,21 +96,18 @@
         <button onclick="action('addview')">📑 AddView</button>
       </div>
 
-      <textarea id="outputBox" placeholder="Result will appear here..."></textarea>
-      <button class="copy-btn" onclick="copyText()">📋 Copy</button>
+      <div id="actionContent"></div>
     </div>
   </div>
 
   <script>
     const usernameKey = "amit_tool_username";
-
     function saveUsername() {
       const name = document.getElementById("usernameInput").value.trim();
       if (!name) return alert("Please enter username.");
       localStorage.setItem(usernameKey, name);
       loadApp();
     }
-
     function loadApp() {
       const name = localStorage.getItem(usernameKey);
       if (name) {
@@ -139,41 +116,6 @@
         document.getElementById("mainApp").style.display = "block";
       }
     }
-
-    function action(cmd) {
-      const output = document.getElementById("outputBox");
-      switch (cmd) {
-        case "list":
-          output.value = "Send date (e.g. 15 May)...";
-          break;
-        case "show":
-          output.value = "List:\n1. `CODE 1234`\n2. `CODE2 5678`";
-          break;
-        case "insert":
-          output.value = "Send code + number like `ABCD12345 2400`";
-          break;
-        case "mono":
-          output.value = "`CODE12345`\n\n`CODE67890`\n\n`CODE11111`";
-          break;
-        case "reset":
-          output.value = "";
-          break;
-        case "add":
-          output.value = "CODE AMOUNT\nCHANNEL\nTOTAL\nDATE\nID";
-          break;
-        case "addview":
-          output.value = "𝗡𝗨𝗠𝗕𝗘𝗥:  `ABCD12345` {2300}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  XYZ ✅\n𝗧𝗢𝗧𝗔𝗟: 10 ✅\n𝗗𝗔𝗧𝗘: 15 May ✅\nID: @user ✅";
-          break;
-      }
-      showPopup(`${cmd.toUpperCase()} triggered`);
-    }
-
-    function copyText() {
-      const text = document.getElementById("outputBox").value;
-      navigator.clipboard.writeText(text);
-      showPopup("📋 Copied to clipboard");
-    }
-
     function showPopup(msg) {
       const popup = document.createElement("div");
       popup.className = "popup";
@@ -182,7 +124,104 @@
       setTimeout(() => popup.remove(), 2000);
     }
 
-    // Load on start
+    function action(cmd) {
+      const content = document.getElementById("actionContent");
+      content.innerHTML = "";
+      const output = document.createElement("textarea");
+      output.id = "outputBox";
+      output.placeholder = "Result will appear here...";
+      content.appendChild(output);
+
+      const copyBtn = document.createElement("button");
+      copyBtn.textContent = "📋 Copy";
+      copyBtn.className = "copy-btn";
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(output.value);
+        showPopup("📋 Copied!");
+      };
+
+      if (cmd === "list") {
+        const date = document.createElement("input");
+        date.placeholder = "📅 Enter Date (e.g. 14 May)";
+        const list = document.createElement("textarea");
+        list.placeholder = "📝 Enter Your List (serial format)";
+        const save = document.createElement("button");
+        save.textContent = "💾 Save";
+        save.onclick = () => {
+          const lines = list.value.trim().split("\n");
+          const cleaned = lines.map(l => {
+            const parts = l.trim().split(" ");
+            const last = parts.at(-1);
+            return /del/i.test(l) ? `${parts[0]}   deleted` : `${parts[0]}   \`${last}\``;
+          });
+          output.value = `**${date.value.trim()}**\n\n` + cleaned.join("\n");
+          showPopup("✅ List Saved");
+        };
+        content.append(date, list, save, output, copyBtn);
+
+      } else if (cmd === "insert") {
+        const code = document.createElement("input");
+        code.placeholder = "🔢 Code (8–9 digit) + Amount";
+        const save = document.createElement("button");
+        save.textContent = "💾 Save";
+        save.onclick = () => {
+          const val = code.value.trim().split(" ");
+          if (val.length !== 2 || val[0].length < 8 || val[0].length > 9) {
+            showPopup("❌ Invalid Format");
+            return;
+          }
+          output.value = `Inserted: \`${val[0]}\` with amount ${val[1]}`;
+          showPopup("✅ Code Inserted");
+        };
+        content.append(code, save, output, copyBtn);
+
+      } else if (cmd === "mono") {
+        const codes = document.createElement("textarea");
+        codes.placeholder = "🔤 Enter codes with gaps";
+        const save = document.createElement("button");
+        save.textContent = "💾 Save";
+        save.onclick = () => {
+          const lines = codes.value.trim().split("\n").filter(Boolean);
+          const formatted = lines.map(l => `\`${l.trim()}\``).join("\n\n");
+          output.value = formatted;
+          showPopup("✅ Mono Saved");
+        };
+        content.append(codes, save, output, copyBtn);
+
+      } else if (cmd === "reset") {
+        output.value = "List reset successfully.";
+        content.append(output, copyBtn);
+        showPopup("♻️ Reset");
+
+      } else if (cmd === "add") {
+        const lines = ["CODE 2300", "CHANNEL", "TOTAL", "DATE", "ID"].map(ph => {
+          const inp = document.createElement("input");
+          inp.placeholder = ph;
+          return inp;
+        });
+        const save = document.createElement("button");
+        save.textContent = "💾 Save";
+        save.onclick = () => {
+          const [c, ch, t, d, id] = lines.map(i => i.value.trim());
+          if (!c || !ch || !t || !d || !id) {
+            showPopup("❌ Fill all 5 lines");
+            return;
+          }
+          const [code, amount] = c.split(" ");
+          output.value = `𝗡𝗨𝗠𝗕𝗘𝗥:  \`${code}\` {${amount}}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  ${ch} ✅\n𝗧𝗢𝗧𝗔𝗟: ${t} ✅\n𝗗𝗔𝗧𝗘: ${d} ✅\nID: ${id} ✅`;
+          showPopup("✅ Add Saved");
+        };
+        content.append(...lines, save, output, copyBtn);
+
+      } else if (cmd === "show" || cmd === "addview") {
+        output.value = cmd === "show"
+          ? "**15 June**\n\n1.   `CODE12345`\n2.   `CODE67890`"
+          : `𝗡𝗨𝗠𝗕𝗘𝗥:  \`ABCD12345\` {2300}\n\n𝗖𝗛𝗔𝗡𝗡𝗘𝗟 𝗡𝗔𝗠𝗘--  XYZ ✅\n𝗧𝗢𝗧𝗔𝗟: 10 ✅\n𝗗𝗔𝗧𝗘: 15 May ✅\nID: @user ✅`;
+        content.append(output, copyBtn);
+        showPopup(`📤 ${cmd.toUpperCase()} Loaded`);
+      }
+    }
+
     loadApp();
   </script>
 </body>
