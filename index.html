@@ -125,7 +125,17 @@
   </div>
 
   <div class="code-center">
-    <input type="text" id="codeInput" placeholder="Enter your code">
+    <input 
+      type="text" 
+      id="codeInput" 
+      placeholder="Enter your code" 
+      oninput="autoFocusNumber()" />
+
+    <input 
+      type="number" 
+      id="numberInput" 
+      placeholder="Enter number" />
+
     <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
   </div>
 
@@ -202,10 +212,11 @@
   }
 
   function insertCode() {
-    const val = document.getElementById("codeInput").value.trim();
-    const [code, number] = val.split(/\s+/);
+    const code = document.getElementById("codeInput").value.trim();
+    const number = document.getElementById("numberInput").value.trim();
+
     if (!code || !number || (code.length !== 8 && code.length !== 9) || isNaN(number)) {
-      showToast("❌ Format: ABC123456 2300", "#ff1744");
+      showToast("❌ Format: ABC123456 + 2300", "#ff1744");
       return;
     }
 
@@ -220,6 +231,7 @@
         return;
       }
     }
+
     showToast("⚠️ No space left to insert.", "#ff9100");
   }
 
@@ -275,6 +287,14 @@
     navigator.clipboard.writeText(text).then(() => {
       showToast("📋 Mono Copied!");
     });
+  }
+
+  function autoFocusNumber() {
+    const codeField = document.getElementById("codeInput");
+    const numberField = document.getElementById("numberInput");
+    if (codeField.value.trim().length >= 8) {
+      numberField.focus();
+    }
   }
 
   window.onload = () => {
