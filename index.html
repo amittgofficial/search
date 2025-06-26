@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AmitXBhai</title>
+  <title>AmitTG Supabase Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -48,163 +49,84 @@
     .btn-copy { background: #f57c00; color: #fff; }
     .btn-confirm { background: #00897b; color: #fff; }
     .btn-mono { background: #00acc1; color: #fff; }
+    .btn-logout { background: #c62828; color: #fff; }
     button:hover {
       opacity: 0.9;
       transform: scale(1.03);
       transition: 0.2s ease-in-out;
     }
-    .code-center {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 30px auto 10px;
-      max-width: 400px;
-    }
-    .code-center input,
-    .code-center button {
-      width: 100%;
-      margin: 6px 0;
-    }
-    .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(30, 30, 30, 0.9);
-      color: #fff;
-      padding: 20px 25px;
-      border-radius: 12px;
-      display: none;
-      z-index: 999;
-      font-weight: bold;
-      text-align: center;
-      min-width: 200px;
-      box-shadow: 0 0 10px #00c853;
-    }
-    .toast .loader {
-      border: 4px solid #333;
-      border-top: 4px solid #00e676;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      margin: 10px auto 0;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    #dateInput, #listInput, #confirmBtn,
-    #monoInput, #monoRunBtn, #monoResult, #copyMono, #historyOutput {
-      display: none;
-    }
-    #loginSection {
-      max-width: 400px;
-      margin: auto;
-      margin-top: 100px;
-      display: none;
-    }
-    .history-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .history-item div {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
   </style>
 </head>
 <body>
 
-<div class="box" id="loginSection">
+<div class="box" id="loginBox">
   <h2>🔐 Login</h2>
-  <input type="text" id="usernameInput" placeholder="Enter your name..." />
-  <button onclick="saveLogin()">🚪 Login</button>
+  <input type="text" id="usernameInput" placeholder="Enter your username">
+  <button onclick="login()">🚪 Login</button>
 </div>
 
-<div class="box" id="toolSection" style="display:none;">
-  <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
-    <div><b>👤 User:</b> <span id="usernameShow"></span></div>
-    <div>
-      <button onclick="toggleSection('home')" class="btn-confirm">🏠 Home</button>
-      <button onclick="toggleSection('list')" class="btn-list">📋 List</button>
-      <button onclick="toggleSection('mono')" class="btn-mono">💠 Mono</button>
-      <button onclick="toggleSection('history')" class="btn-show">📜 History</button>
-    </div>
+<div class="box" id="mainBox" style="display:none;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div><b>👤 User:</b> <span id="userShow"></span></div>
+    <button onclick="logout()" class="btn-logout">🚪 Logout</button>
   </div>
 
-  <div class="code-center" id="codeSection">
-    <input type="text" id="codeInput" placeholder="Enter your code" oninput="autoFocusNumber()" />
-    <input type="number" id="numberInput" placeholder="Enter number" />
-    <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
-  </div>
+  <hr>
 
-  <div id="outputSection">
-    <div id="result" class="output"></div>
-    <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
-    <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
-  </div>
-
-  <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 15 June)">
+  <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 26 June)">
   <textarea id="listInput" rows="6" placeholder="📄 Paste your list..."></textarea>
-  <button id="confirmBtn" onclick="saveList()" class="btn-confirm">💾 Confirm Save</button>
+  <button onclick="saveList()" class="btn-confirm">💾 Save List</button>
 
-  <textarea id="monoInput" rows="6" placeholder="🔤 Paste mono list (codes)..."></textarea>
-  <button id="monoRunBtn" onclick="runMono()" class="btn-mono">⚙️ Convert Mono</button>
+  <hr>
+
+  <input type="text" id="codeInput" placeholder="Enter Code (8/9 chars)" oninput="autoFocusNumber()">
+  <input type="number" id="numberInput" placeholder="Enter Number">
+  <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
+
+  <div id="result" class="output"></div>
+  <button onclick="copyResult()" class="btn-copy">📋 Copy Output</button>
+
+  <hr>
+
+  <textarea id="monoInput" rows="4" placeholder="🔤 Paste Mono list..."></textarea>
+  <button onclick="runMono()" class="btn-mono">⚙️ Convert Mono</button>
   <div id="monoResult" class="output"></div>
-  <button id="copyMono" class="btn-copy" onclick="copyMonoResult()">📋 Copy Mono</button>
-
-  <div id="historyOutput" class="output"></div>
+  <button onclick="copyMono()" class="btn-copy">📋 Copy Mono</button>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
+  const supabase = supabase.createClient(
+    "https://xdmzxsguqrfaxyfjxtye.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhkbXp4c2d1cXJmYXh5Zmp4dHllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA5MzQ5MTEsImV4cCI6MjA2NjUxMDkxMX0.qw9y4pkOJ2JBIFc6PC2_bfjgxJCojlLvU6z_O2OLSfQ"
+  );
+
   let userData = { date: '', list: [], nextIndex: 0 };
+  let currentUser = '';
 
-  function showToast(msg, color = "#00c853", reload = false, withLoader = false) {
-    const toast = document.getElementById("toast");
-    toast.innerHTML = withLoader ? `<div>${msg}</div><div class="loader"></div>` : msg;
-    toast.style.background = color;
-    toast.style.display = "block";
-    setTimeout(() => {
-      toast.style.display = "none";
-      if (reload) location.reload();
-    }, withLoader ? 2000 : 1500);
-  }
-
-  function saveLogin() {
+  async function login() {
     const username = document.getElementById("usernameInput").value.trim();
-    if (!username) return showToast("❌ Username required!", "#ff1744");
-    localStorage.setItem("amit_user_name", username);
-    showToast("✅ Login Saved!", "#00c853", true);
+    if (!username) return alert("❌ Username required!");
+    currentUser = username;
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("mainBox").style.display = "block";
+    document.getElementById("userShow").innerText = currentUser;
+
+    const { data } = await supabase
+      .from("user_data")
+      .select("data")
+      .eq("username", currentUser)
+      .single();
+
+    if (data) {
+      userData = data.data;
+      showList();
+    }
   }
 
-  function toggleSection(mode) {
-    const ids = ["dateInput", "listInput", "confirmBtn", "monoInput", "monoRunBtn", "monoResult", "copyMono", "historyOutput", "outputSection"];
-    ids.forEach(id => document.getElementById(id).style.display = "none");
-    document.getElementById("codeSection").style.display = mode === "home" ? "flex" : "none";
-    if (mode === "home") document.getElementById("outputSection").style.display = "block";
-    if (mode === "list") {
-      document.getElementById("dateInput").style.display = "block";
-      document.getElementById("listInput").style.display = "block";
-      document.getElementById("confirmBtn").style.display = "inline-block";
-    }
-    if (mode === "mono") {
-      document.getElementById("monoInput").style.display = "block";
-      document.getElementById("monoRunBtn").style.display = "inline-block";
-    }
-    if (mode === "history") showHistory();
-  }
-
-  function saveList() {
+  async function saveList() {
     const date = document.getElementById("dateInput").value.trim();
     const lines = document.getElementById("listInput").value.trim().split("\n");
-    if (!date || lines.length === 0) return showToast("❌ Date ya List missing!", "#ff1744");
+    if (!date || lines.length === 0) return alert("❌ Date or list missing!");
 
     let cleaned = [];
     for (let line of lines) {
@@ -222,15 +144,16 @@
     }
 
     userData = { date, list: cleaned, nextIndex: 0 };
-    localStorage.setItem("amit_user_data", JSON.stringify(userData));
-    showToast("✅ List saved!", "#00c853", true, true);
+    await supabase.from("user_data").upsert([{ username: currentUser, data: userData }]);
+    alert("✅ List saved!");
+    showList();
   }
 
-  function insertCode() {
+  async function insertCode() {
     const code = document.getElementById("codeInput").value.trim();
     const number = document.getElementById("numberInput").value.trim();
-    if (!code || !number || (code.length !== 8 && code.length !== 9) || isNaN(number)) {
-      showToast("❌ Format: ABC123456 + 2300", "#ff1744");
+    if (!code || !number || (code.length !== 8 && code.length !== 9)) {
+      alert("❌ Invalid code or number");
       return;
     }
 
@@ -239,54 +162,39 @@
       if (item.value !== "deleted" && !item.value.includes(" ")) {
         item.value = `${code}   ${number}   ${item.value}`;
         userData.nextIndex = i + 1;
-        localStorage.setItem("amit_user_data", JSON.stringify(userData));
-        showToast(`✅ Code saved!`, "#00c853", true, true);
+        await supabase.from("user_data").upsert([{ username: currentUser, data: userData }]);
+        alert("✅ Code inserted!");
         showList();
         return;
       }
     }
 
-    showToast("⚠️ No space left to insert.", "#ff9100");
+    alert("⚠️ No space left to insert.");
   }
 
   function showList() {
-    const saved = localStorage.getItem("amit_user_data");
-    const resultEl = document.getElementById("result");
-    const copyBtn = document.getElementById("copyBtn");
-    if (!saved) {
-      resultEl.innerText = "No data.";
-      copyBtn.style.display = "none";
-      return;
-    }
-
-    const data = JSON.parse(saved);
-    let output = `**${data.date}**\n\n****\n\n`;
-    for (let item of data.list) {
+    let output = `**${userData.date}**\n\n****\n\n`;
+    for (let item of userData.list) {
       let val = item.value.replace(/\b([A-Za-z0-9]{8,9})\b/g, "`$1`");
       output += `${item.serial}.   ${val}\n\n`;
     }
-    resultEl.innerText = output;
-    copyBtn.style.display = "inline-block";
+    document.getElementById("result").innerText = output;
   }
 
   function copyResult() {
-    const text = document.getElementById("result").innerText;
-    navigator.clipboard.writeText(text).then(() => showToast("📋 Copied!"));
+    navigator.clipboard.writeText(document.getElementById("result").innerText)
+      .then(() => alert("📋 Copied!"));
   }
 
   function runMono() {
     const lines = document.getElementById("monoInput").value.trim().split("\n");
     let output = lines.map(line => line.trim()).filter(line => line).map(line => line.replace(/\b([A-Za-z0-9]{8,9})\b/, "`$1`")).join("\n\n");
-
     document.getElementById("monoResult").innerText = output;
-    document.getElementById("monoResult").style.display = "block";
-    document.getElementById("copyMono").style.display = "inline-block";
-    showToast("✅ Converted to mono");
   }
 
-  function copyMonoResult() {
-    const text = document.getElementById("monoResult").innerText;
-    navigator.clipboard.writeText(text).then(() => showToast("📋 Mono Copied!"));
+  function copyMono() {
+    navigator.clipboard.writeText(document.getElementById("monoResult").innerText)
+      .then(() => alert("📋 Mono Copied!"));
   }
 
   function autoFocusNumber() {
@@ -295,65 +203,12 @@
     if (codeField.value.trim().length >= 8) numberField.focus();
   }
 
-  function saveUpdatedListToHistory() {
-    const saved = localStorage.getItem("amit_user_data");
-    if (!saved) return showToast("❌ No list to save!");
-    const data = JSON.parse(saved);
-    const output = document.getElementById("result").innerText.trim();
-    if (!output) return showToast("⚠️ Nothing to save.");
-
-    let history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
-    history.unshift({ date: data.date, output });
-    localStorage.setItem("amit_final_history", JSON.stringify(history));
-    showToast("✅ Saved to history!");
+  function logout() {
+    currentUser = "";
+    userData = { date: '', list: [], nextIndex: 0 };
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("mainBox").style.display = "none";
   }
-
-  function showHistory() {
-    const container = document.getElementById("historyOutput");
-    let history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
-    if (!history.length) {
-      container.innerHTML = "📭 No saved history.";
-    } else {
-      container.innerHTML = `<h3>📜 Saved Lists:</h3>` + history.map((h, i) =>
-        `<div class="history-item"><b>📅 ${h.date}</b>
-         <div>
-           <button onclick="copyHistory(${i})" class="btn-copy">📋</button>
-           <button onclick="deleteHistory(${i})" class="btn-confirm">🗑</button>
-         </div></div>`).join("");
-    }
-    container.style.display = "block";
-  }
-
-  function copyHistory(i) {
-    const history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
-    if (history[i]) {
-      navigator.clipboard.writeText(history[i].output).then(() => showToast("📋 History Copied!"));
-    }
-  }
-
-  function deleteHistory(i) {
-    let history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
-    history.splice(i, 1);
-    localStorage.setItem("amit_final_history", JSON.stringify(history));
-    showToast("🗑 Deleted!");
-    showHistory();
-  }
-
-  window.onload = () => {
-    const savedName = localStorage.getItem("amit_user_name");
-    if (!savedName) {
-      document.getElementById("loginSection").style.display = "block";
-      return;
-    }
-    document.getElementById("toolSection").style.display = "block";
-    document.getElementById("usernameShow").innerText = savedName;
-    document.getElementById("codeSection").style.display = "flex";
-    const saved = localStorage.getItem("amit_user_data");
-    if (saved) {
-      userData = JSON.parse(saved);
-      showList();
-    }
-  };
 </script>
 
 </body>
