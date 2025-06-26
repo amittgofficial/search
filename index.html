@@ -105,6 +105,10 @@
       margin-top: 100px;
       display: none;
     }
+    #historyOutput h3 {
+      color: #29b6f6;
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -121,21 +125,13 @@
     <div>
       <button onclick="startSaveList()" class="btn-list">📋 List</button>
       <button onclick="startMonoMode()" class="btn-mono">💠 Mono</button>
+      <button onclick="showHistory()" class="btn-show">📜 History</button>
     </div>
   </div>
 
   <div class="code-center">
-    <input 
-      type="text" 
-      id="codeInput" 
-      placeholder="Enter your code" 
-      oninput="autoFocusNumber()" />
-
-    <input 
-      type="number" 
-      id="numberInput" 
-      placeholder="Enter number" />
-
+    <input type="text" id="codeInput" placeholder="Enter your code" oninput="autoFocusNumber()" />
+    <input type="number" id="numberInput" placeholder="Enter number" />
     <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
   </div>
 
@@ -150,9 +146,11 @@
 
   <div id="result" class="output"></div>
   <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
+  <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="historyOutput" class="output" style="display:none;"></div>
 
 <script>
   let userData = { date: '', list: [], nextIndex: 0 };
@@ -175,21 +173,33 @@
     showToast("✅ Login Saved!", "#00c853", true);
   }
 
+  function toggleSection(mode) {
+    const sections = {
+      list: ["dateInput", "listInput", "confirmBtn"],
+      mono: ["monoInput", "monoRunBtn", "monoResult", "copyMono"],
+      none: ["dateInput", "listInput", "confirmBtn", "monoInput", "monoRunBtn", "monoResult", "copyMono"]
+    };
+    for (let id of sections.none) {
+      document.getElementById(id).style.display = "none";
+    }
+    if (mode === "list") {
+      for (let id of sections.list) document.getElementById(id).style.display = "block";
+    }
+    if (mode === "mono") {
+      for (let id of sections.mono) document.getElementById(id).style.display = "block";
+    }
+    document.getElementById("historyOutput").style.display = "none";
+  }
+
   function startSaveList() {
-    document.getElementById("dateInput").style.display = "block";
-    document.getElementById("listInput").style.display = "block";
-    document.getElementById("confirmBtn").style.display = "inline-block";
+    toggleSection("list");
     showToast("📋 Now enter date and list...");
   }
 
   function saveList() {
     const date = document.getElementById("dateInput").value.trim();
     const lines = document.getElementById("listInput").value.trim().split("\n");
-
-    if (!date || lines.length === 0) {
-      showToast("❌ Date ya List missing!", "#ff1744");
-      return;
-    }
+    if (!date || lines.length === 0) return showToast("❌ Date ya List missing!", "#ff1744");
 
     let cleaned = [];
     for (let line of lines) {
@@ -216,8 +226,7 @@
     const number = document.getElementById("numberInput").value.trim();
 
     if (!code || !number || (code.length !== 8 && code.length !== 9) || isNaN(number)) {
-      showToast("❌ Format: ABC123456 + 2300", "#ff1744");
-      return;
+      return showToast("❌ Format: ABC123456 + 2300", "#ff1744");
     }
 
     for (let i = userData.nextIndex; i < userData.list.length; i++) {
@@ -231,7 +240,6 @@
         return;
       }
     }
-
     showToast("⚠️ No space left to insert.", "#ff9100");
   }
 
@@ -239,7 +247,6 @@
     const saved = localStorage.getItem("amit_user_data");
     const resultEl = document.getElementById("result");
     const copyBtn = document.getElementById("copyBtn");
-
     if (!saved) {
       resultEl.innerText = "No data.";
       copyBtn.style.display = "none";
@@ -257,14 +264,11 @@
 
   function copyResult() {
     const text = document.getElementById("result").innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      showToast("📋 Copied!");
-    });
+    navigator.clipboard.writeText(text).then(() => showToast("📋 Copied!"));
   }
 
   function startMonoMode() {
-    document.getElementById("monoInput").style.display = "block";
-    document.getElementById("monoRunBtn").style.display = "inline-block";
+    toggleSection("mono");
     showToast("🔤 Paste your list in mono format...");
   }
 
@@ -284,17 +288,59 @@
 
   function copyMonoResult() {
     const text = document.getElementById("monoResult").innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      showToast("📋 Mono Copied!");
-    });
+    navigator.clipboard.writeText(text).then(() => showToast("📋 Mono Copied!"));
   }
 
   function autoFocusNumber() {
     const codeField = document.getElementById("codeInput");
     const numberField = document.getElementById("numberInput");
-    if (codeField.value.trim().length >= 8) {
-      numberField.focus();
+    if (codeField.value.trim().length >= 8) numberField.focus();
+  }
+
+  function saveUpdatedListToHistory() {
+    const resultText = document.getElementById("result").innerText.trim();
+    if (!resultText) return showToast("❌ Nothing to save!", "#ff1744");
+
+    const match = resultText.match(/^\*\*(.+?)\*\*/);
+    const date = match ? match[1] : `Unknown`;
+
+    const history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
+    history.push({ date, output: resultText });
+    localStorage.setItem("amit_final_history", JSON.stringify(history));
+    showToast("✅ Final list saved to history!", "#00c853");
+  }
+
+  function showHistory() {
+    toggleSection("");
+    const container = document.getElementById("historyOutput");
+    const history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
+
+    if (history.length === 0) {
+      container.innerHTML = "📭 No saved updated lists.";
+      container.style.display = "block";
+      return;
     }
+
+    let html = `<h3>📜 Saved Lists:</h3>`;
+    history.forEach((entry, index) => {
+      html += `
+        <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <b>📅 ${entry.date}</b>
+          <button onclick="copySavedHistory(${index})" class="btn-copy">📋 Copy</button>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    container.style.display = "block";
+  }
+
+  function copySavedHistory(index) {
+    const history = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
+    if (!history[index]) return;
+    navigator.clipboard.writeText(history[index].output).then(() => {
+      showToast(`📋 Copied: ${history[index].date}`);
+    });
   }
 
   window.onload = () => {
