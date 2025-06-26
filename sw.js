@@ -1,4 +1,4 @@
-const cacheName = 'amitxbhai-cache-v1';
+const cacheName = 'Code-cache-v1';
 const filesToCache = [
   './',
   './index.html',
