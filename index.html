@@ -105,6 +105,17 @@
       margin-top: 100px;
       display: none;
     }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .history-item div {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -132,6 +143,12 @@
     <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
   </div>
 
+  <div id="outputSection">
+    <div id="result" class="output"></div>
+    <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
+    <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
+  </div>
+
   <input type="text" id="dateInput" placeholder="🗓 Enter Date (e.g., 15 June)">
   <textarea id="listInput" rows="6" placeholder="📄 Paste your list..."></textarea>
   <button id="confirmBtn" onclick="saveList()" class="btn-confirm">💾 Confirm Save</button>
@@ -140,10 +157,6 @@
   <button id="monoRunBtn" onclick="runMono()" class="btn-mono">⚙️ Convert Mono</button>
   <div id="monoResult" class="output"></div>
   <button id="copyMono" class="btn-copy" onclick="copyMonoResult()">📋 Copy Mono</button>
-
-  <div id="result" class="output"></div>
-  <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
-  <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
 
   <div id="historyOutput" class="output"></div>
 </div>
@@ -172,20 +185,20 @@
   }
 
   function toggleSection(mode) {
-    const ids = ["dateInput", "listInput", "confirmBtn", "monoInput", "monoRunBtn", "monoResult", "copyMono", "historyOutput"];
+    const ids = ["dateInput", "listInput", "confirmBtn", "monoInput", "monoRunBtn", "monoResult", "copyMono", "historyOutput", "outputSection"];
     ids.forEach(id => document.getElementById(id).style.display = "none");
     document.getElementById("codeSection").style.display = mode === "home" ? "flex" : "none";
-
+    if (mode === "home") document.getElementById("outputSection").style.display = "block";
     if (mode === "list") {
       document.getElementById("dateInput").style.display = "block";
       document.getElementById("listInput").style.display = "block";
       document.getElementById("confirmBtn").style.display = "inline-block";
-    } else if (mode === "mono") {
+    }
+    if (mode === "mono") {
       document.getElementById("monoInput").style.display = "block";
       document.getElementById("monoRunBtn").style.display = "inline-block";
-    } else if (mode === "history") {
-      showHistory();
     }
+    if (mode === "history") showHistory();
   }
 
   function saveList() {
@@ -302,10 +315,11 @@
       container.innerHTML = "📭 No saved history.";
     } else {
       container.innerHTML = `<h3>📜 Saved Lists:</h3>` + history.map((h, i) =>
-        `<div style="margin-bottom: 10px;"><b>📅 ${h.date}</b> 
-          <button onclick="copyHistory(${i})" class="btn-copy">📋 Copy</button> 
-          <button onclick="deleteHistory(${i})" class="btn-confirm">🗑 Delete</button>
-        </div>`).join("");
+        `<div class="history-item"><b>📅 ${h.date}</b>
+         <div>
+           <button onclick="copyHistory(${i})" class="btn-copy">📋</button>
+           <button onclick="deleteHistory(${i})" class="btn-confirm">🗑</button>
+         </div></div>`).join("");
     }
     container.style.display = "block";
   }
