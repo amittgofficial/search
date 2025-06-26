@@ -1,0 +1,16 @@
+{
+  "name": "AmitXBhai Tool",
+  "short_name": "AmitXBhai",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg9qBJ9-Wl0SLdJEUFxF4lJf-RWs4AnRSyMBHcwQxC043T-aG4EK7KHCLpStehHLG4lthZuXQVd7cH-Wy9DrmJL3Z1_5day7XYuHs9uk7U_JjINy0mdUa6DDpiCiQT4pSrLhNapDc4NP2vq6PaNLue1UI3DrKNMHmg7kdW5Gh7bdSiK7Y266YD2FT2-g2b1/s320/1000003284.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
