@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <title>AmitXBhai Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+
   <style>
     body {
       font-family: sans-serif;
@@ -375,6 +379,17 @@ window.onload = () => {
   document.getElementById("toolSection").style.display = "block";
   document.getElementById("codeSection").style.display = "flex";
 };
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').then(function (registration) {
+        console.log('ServiceWorker registered: ', registration);
+      }).catch(function (error) {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+    });
+  }
 </script>
 
 
