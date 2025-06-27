@@ -187,6 +187,23 @@
   </div>
 </div>
 
+<!-- 📂 Floating Tools Button (Right Center) -->
+<div style="position: fixed; top: 50%; right: 20px; transform: translateY(-50%); z-index: 9999;">
+  <button onclick="showBottomPopup()" class="btn-confirm">📂 Tools</button>
+</div>
+
+<!-- 🔳 Tools Popup -->
+<div id="bottomLinkPopup" class="popup" onclick="hideBottomPopup(event)">
+  <div class="popup-content" onclick="event.stopPropagation()" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: 250px;">
+    <span onclick="hideBottomPopup()" style="align-self: flex-end; cursor: pointer;">❌</span>
+    <h3 style="text-align: center;">🔗 Useful Tools</h3>
+    <button class="btn-list" onclick="window.open('https://infotechlifafa.com/lifafa/num.php', '_blank')">💼 Infotech</button>
+    <button class="btn-save" onclick="window.open('https://snapwallet.in/view-number-tools', '_blank')">💰 Snapwallet</button>
+    <button class="btn-mono" onclick="window.open('https://fastxlifafa.in/lifafa/numberarea.php', '_blank')">🚀 FastXl</button>
+  </div>
+</div>
+
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -370,6 +387,13 @@ function copyUserList() {
   navigator.clipboard.writeText(text).then(() => showToast("📋 Userlist copied!", "#00c853"));
 }
 
+function showBottomPopup() {
+  document.getElementById('bottomLinkPopup').style.display = 'flex';
+}
+function hideBottomPopup(e) {
+  document.getElementById('bottomLinkPopup').style.display = 'none';
+}
+
 window.onload = () => {
   const saved = localStorage.getItem("amit_user_data");
   if (saved) {
@@ -380,18 +404,16 @@ window.onload = () => {
   document.getElementById("codeSection").style.display = "flex";
 };
 
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').then(function (registration) {
-        console.log('ServiceWorker registered: ', registration);
-      }).catch(function (error) {
-        console.log('ServiceWorker registration failed: ', error);
-      });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').then(function (registration) {
+      console.log('ServiceWorker registered: ', registration);
+    }).catch(function (error) {
+      console.log('ServiceWorker registration failed: ', error);
     });
-  }
+  });
+}
 </script>
-
 
 </body>
 </html>
