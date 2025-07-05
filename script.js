@@ -1,12 +1,5 @@
 let userData = { date: '', list: [], original: '', nextIndex: 0 };
 
-function copyEncodedText(encoded) {
-  const decoded = decodeURIComponent(encoded);
-  navigator.clipboard.writeText(decoded)
-    .then(() => showToast("📋 Copied!", "#00c853"))
-    .catch(() => showToast("❌ Copy failed!", "#ff1744"));
-}
-
 function hideUserListPopup(e) {
   if (!e || e.target.id === "userListPopup") {
     document.getElementById("userListPopup").style.display = "none";
@@ -215,12 +208,22 @@ function showHistory() {
         `<div style="display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; justify-content: space-between; flex-wrap: wrap;">
           <span style="font-weight: bold;">📅 ${h.date}</span>
           <span style="display: flex; gap: 10px;">
-            <button onclick="copyEncodedText('${encodeURIComponent(h.output)}')" class="btn-copy">📋</button>
+            <button class="btn-copy copy-history" data-text="${encodeURIComponent(h.output)}">📋</button>
             <button onclick="deleteHistory(${i})" style="background:#d32f2f; color:#fff; border:none; padding:10px 15px; border-radius:8px;">❌</button>
           </span>
         </div>`
       ).join("");
   }
+
+  // Fix multiple copy buttons using data-text
+  document.querySelectorAll(".copy-history").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = decodeURIComponent(btn.getAttribute("data-text"));
+      navigator.clipboard.writeText(text)
+        .then(() => showToast("📋 Copied!", "#00c853"))
+        .catch(() => showToast("❌ Copy failed!", "#ff1744"));
+    });
+  });
 
   container.style.display = "block";
 }
