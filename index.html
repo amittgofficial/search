@@ -4,111 +4,95 @@
   <meta charset="UTF-8" />
   <title>CODEXBOT</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div style="position: fixed; top: 15px; left: 15px; z-index: 10000;">
-  <button onclick="toggleDarkMode()" style="padding: 10px; border-radius: 10px;">🌓</button>
-</div>
-
-<div class="box" id="toolSection">
-  <h2></h2>
-
-  <div id="codeSection">
-    <input type="text" id="codeInput" placeholder="Enter your code" oninput="autoFocusNumber()" />
-    <input type="number" id="numberInput" placeholder="Enter number" />
-    <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
-    <button onclick="showEditPopup()">✏️ Edit</button>
+  <div style="position: fixed; top: 15px; left: 15px; z-index: 10000;">
+    <button onclick="toggleDarkMode()" style="padding: 10px; border-radius: 10px;">🌓</button>
   </div>
 
-  <div class="output-section" id="outputSection">
-    <div id="result" class="output">No data.</div>
-    <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
-    <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
+  <div class="box" id="toolSection">
+    <h2></h2>
+    <div id="codeSection">
+      <input type="text" id="codeInput" placeholder="Enter your code" oninput="autoFocusNumber()" />
+      <input type="number" id="numberInput" placeholder="Enter number" />
+      <button onclick="insertCode()" class="btn-save">💾 Save Code</button>
+      <button onclick="showEditPopup()">✏️ Edit</button>
+    </div>
+
+    <div class="output-section" id="outputSection">
+      <div id="result" class="output">No data.</div>
+      <button id="copyBtn" class="btn-copy" onclick="copyResult()">📋 Copy</button>
+      <button id="saveHistoryBtn" class="btn-save" onclick="saveUpdatedListToHistory()">💾 Save List</button>
+    </div>
+
+    <textarea id="monoInput" rows="6" placeholder="🔤 Paste mono list (codes)..." style="display:none;"></textarea>
+    <button id="monoRunBtn" onclick="runMono()" class="btn-mono" style="display:none;">⚙️ Convert Mono</button>
+    <div id="monoResult" class="output" style="display:none;"></div>
+    <button id="copyMono" class="btn-copy" onclick="copyMonoResult()" style="display:none;">📋 Copy Mono</button>
+
+    <div id="historyOutput" class="output" style="display:none;"></div>
   </div>
 
-  <textarea id="monoInput" rows="6" placeholder="🔤 Paste mono list (codes)..." style="display:none;"></textarea>
-  <button id="monoRunBtn" onclick="runMono()" class="btn-mono" style="display:none;">⚙️ Convert Mono</button>
-  <div id="monoResult" class="output" style="display:none;"></div>
-  <button id="copyMono" class="btn-copy" onclick="copyMonoResult()" style="display:none;">📋 Copy Mono</button>
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button onclick="toggleSection('home')">🏠 Home</button>
+    <button onclick="toggleSection('list')">📋 List</button>
+    <button onclick="showUserListPopup()">👥 Userlist</button>
+    <button onclick="toggleSection('mono')">💠 Mono</button>
+    <button onclick="toggleSection('history')">🕘 History</button>
+  </div>
 
-  <div id="historyOutput" class="output" style="display:none;"></div>
-</div>
+  <!-- Popups -->
+  <div id="editPopup" class="popup" onclick="hideEditPopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()">
+      <span onclick="hideEditPopup()">❌</span>
+      <h3 style="text-align:center;">✏️ Edit Serial Line</h3>
+      <input type="number" id="botInput" placeholder="🔢 Serial No." inputmode="numeric" />
+      <input type="text" id="codeEditInput" placeholder="🧾 Code (8–9 chars)" maxlength="9" />
+      <input type="number" id="userInput" placeholder="👤 User" />
+      <button onclick="submitEdit()" class="btn-confirm">✅ Update</button>
+    </div>
+  </div>
 
-<div class="bottom-nav">
-  <button onclick="toggleSection('home')">🏠 Home</button>
-  <button onclick="toggleSection('list')">📋 List</button>
-  <button onclick="showUserListPopup()">👥 Userlist</button>
-  <button onclick="toggleSection('mono')">💠 Mono</button>
-  <button onclick="toggleSection('history')">🕘 History</button>
-</div>
+  <div class="popup" id="listPopup" onclick="hidePopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()">
+      <span onclick="document.getElementById('listPopup').style.display='none'">❌</span>
+      <h3>📋 Enter Date & List</h3>
+      <input type="text" id="popupDateInput" placeholder="🗓 Date (e.g. 15 June)" />
+      <textarea id="popupListInput" rows="6" placeholder="📄 Paste your list..."></textarea>
+      <button onclick="submitListPopup()" class="btn-confirm">💾 Save</button>
+    </div>
+  </div>
+
+  <div id="userListPopup" class="popup" onclick="hideUserListPopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()">
+      <span onclick="document.getElementById('userListPopup').style.display='none'">❌</span>
+      <h3>👥 Userlist</h3>
+      <div id="userListContent" style="max-height:400px; overflow:auto; background:#000; padding:10px; border-radius:8px; white-space:pre-wrap; color:#fff;"></div>
+      <button onclick="copyUserList()" class="btn-copy" style="margin-top:10px; width:100%;">📋 Copy</button>
+    </div>
+  </div>
+
+  <div id="bottomLinkPopup" class="popup" onclick="hideBottomPopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: 250px;">
+      <span onclick="hideBottomPopup()" style="align-self: flex-end;">❌</span>
+      <h3 style="text-align: center;">🔗 Useful Tools</h3>
+      <button class="btn-list" onclick="window.open('https://infotechlifafa.com/lifafa/num.php', '_blank')">💼 Infotech</button>
+      <button class="btn-save" onclick="window.open('https://snapwallet.in/view-number-tools', '_blank')">💰 Snapwallet</button>
+      <button class="btn-mono" onclick="window.open('https://fastxlifafa.in/lifafa/numberarea.php', '_blank')">🚀 FastXl</button>
+    </div>
+  </div>
 
   <!-- Floating Save Code Button -->
-<button id="floatingSaveBtn" onclick="showSavePopup()">💾 Save Code</button>
-
-<!-- Save Code Popup -->
-<div id="saveCodePopup" class="popup" onclick="hideSavePopup(event)">
-  <div class="popup-content" onclick="event.stopPropagation()" style="display:flex; flex-direction:column; gap:10px;">
-    <span onclick="hideSavePopup()" style="align-self: flex-end;">❌</span>
-    <h3 style="text-align:center;">💾 Add Code Entry</h3>
-    
-    <input type="text" id="popupCodeInput" placeholder="🧾 Code (8–9 chars)" maxlength="9" inputmode="text" />
-    <input type="number" id="popupNumberInput" placeholder="👤 Number/User" inputmode="numeric" />
-
-    <button onclick="insertCodeFromPopup()" class="btn-confirm">✅ Save</button>
+  <div class="floating-save">
+    <button onclick="insertCode()">💾 Save Code</button>
   </div>
-</div>
 
-<!-- Popups -->
-<div id="editPopup" class="popup" onclick="hideEditPopup(event)">
-  <div class="popup-content" onclick="event.stopPropagation()" style="display:flex; flex-direction:column; gap:10px; width:90%; max-width:400px;">
-    <span onclick="hideEditPopup()" style="align-self: flex-end;">❌</span>
-    <h3 style="text-align:center;">✏️ Edit Serial Line</h3>
-    <input type="number" id="botInput" placeholder="🔢 Serial No." inputmode="numeric" />
-    <input type="text" id="codeEditInput" placeholder="🧾 Code (8–9 chars)" maxlength="9" />
-    <input type="number" id="userInput" placeholder="👤 User" />
-    <button onclick="submitEdit()" class="btn-confirm">✅ Update</button>
-  </div>
-</div>
+  <div id="toast"></div>
 
-<div class="popup" id="listPopup">
-  <div class="popup-content">
-    <span onclick="document.getElementById('listPopup').style.display='none'">❌</span>
-    <h3>📋 Enter Date & List</h3>
-    <input type="text" id="popupDateInput" placeholder="🗓 Date (e.g. 15 June)" />
-    <textarea id="popupListInput" rows="6" placeholder="📄 Paste your list..."></textarea>
-    <button onclick="submitListPopup()" class="btn-confirm">💾 Save</button>
-  </div>
-</div>
-
-<div id="userListPopup" class="popup" onclick="hideUserListPopup(event)">
-  <div class="popup-content" onclick="event.stopPropagation()">
-    <span onclick="document.getElementById('userListPopup').style.display='none'">❌</span>
-    <h3>👥 Userlist</h3>
-    <div id="userListContent" style="max-height:400px; overflow:auto; background:#000; padding:10px; border-radius:8px; white-space:pre-wrap; color:#fff;"></div>
-    <button onclick="copyUserList()" class="btn-copy" style="margin-top:10px; width:100%;">📋 Copy</button>
-  </div>
-</div>
-
-<div id="bottomLinkPopup" class="popup" onclick="hideBottomPopup(event)">
-  <div class="popup-content" onclick="event.stopPropagation()" style="display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: 250px;">
-    <span onclick="hideBottomPopup()" style="align-self: flex-end;">❌</span>
-    <h3 style="text-align: center;">🔗 Useful Tools</h3>
-    <button class="btn-list" onclick="window.open('https://infotechlifafa.com/lifafa/num.php', '_blank')">💼 Infotech</button>
-    <button class="btn-save" onclick="window.open('https://snapwallet.in/view-number-tools', '_blank')">💰 Snapwallet</button>
-    <button class="btn-mono" onclick="window.open('https://fastxlifafa.in/lifafa/numberarea.php', '_blank')">🚀 FastXl</button>
-  </div>
-</div>
-
-<div class="tools-btn">
-  <button onclick="showBottomPopup()">📂 Tools</button>
-</div>
-
-<div id="toast"></div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
