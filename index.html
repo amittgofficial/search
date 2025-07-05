@@ -46,6 +46,22 @@
   <button onclick="toggleSection('history')">🕘 History</button>
 </div>
 
+  <!-- Floating Save Code Button -->
+<button id="floatingSaveBtn" onclick="showSavePopup()">💾 Save Code</button>
+
+<!-- Save Code Popup -->
+<div id="saveCodePopup" class="popup" onclick="hideSavePopup(event)">
+  <div class="popup-content" onclick="event.stopPropagation()" style="display:flex; flex-direction:column; gap:10px;">
+    <span onclick="hideSavePopup()" style="align-self: flex-end;">❌</span>
+    <h3 style="text-align:center;">💾 Add Code Entry</h3>
+    
+    <input type="text" id="popupCodeInput" placeholder="🧾 Code (8–9 chars)" maxlength="9" inputmode="text" />
+    <input type="number" id="popupNumberInput" placeholder="👤 Number/User" inputmode="numeric" />
+
+    <button onclick="insertCodeFromPopup()" class="btn-confirm">✅ Save</button>
+  </div>
+</div>
+
 <!-- Popups -->
 <div id="editPopup" class="popup" onclick="hideEditPopup(event)">
   <div class="popup-content" onclick="event.stopPropagation()" style="display:flex; flex-direction:column; gap:10px; width:90%; max-width:400px;">
