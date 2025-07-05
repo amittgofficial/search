@@ -172,3 +172,17 @@ body.dark button {
 body.dark .bottom-nav {
   background: #000;
 }
+
+#floatingSaveBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #00c853;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 999;
+}
