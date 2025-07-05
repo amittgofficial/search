@@ -27,24 +27,6 @@ function toggleSection(mode) {
   document.getElementById("historyOutput").style.display = "none";
   document.getElementById("listPopup").style.display = "none";
   document.getElementById("userListPopup").style.display = "none";
-  function showSavePopup() {
-  document.getElementById("popupCodeInput").value = "";
-  document.getElementById("popupNumberInput").value = "";
-  document.getElementById("saveCodePopup").style.display = "flex";
-  document.getElementById("popupCodeInput").focus();
-}
-
-function hideSavePopup(e) {
-  if (!e || e.target.id === "saveCodePopup") {
-    document.getElementById("saveCodePopup").style.display = "none";
-  }
-}
-  document.getElementById("popupCodeInput").addEventListener("input", () => {
-  const val = document.getElementById("popupCodeInput").value.trim();
-  if (val.length >= 8) {
-    document.getElementById("popupNumberInput").focus();
-  }
-});
 
   if (mode === "home") {
     document.getElementById("codeSection").style.display = "flex";
@@ -226,22 +208,12 @@ function showHistory() {
         `<div style="display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; justify-content: space-between; flex-wrap: wrap;">
           <span style="font-weight: bold;">📅 ${h.date}</span>
           <span style="display: flex; gap: 10px;">
-            <button class="btn-copy copy-history" data-text="${encodeURIComponent(h.output)}">📋</button>
+            <button onclick="navigator.clipboard.writeText(\`${h.output}\`).then(()=>showToast('📋 Copied!', '#00c853'))" class="btn-copy">📋</button>
             <button onclick="deleteHistory(${i})" style="background:#d32f2f; color:#fff; border:none; padding:10px 15px; border-radius:8px;">❌</button>
           </span>
         </div>`
       ).join("");
   }
-
-  // Fix multiple copy buttons using data-text
-  document.querySelectorAll(".copy-history").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const text = decodeURIComponent(btn.getAttribute("data-text"));
-      navigator.clipboard.writeText(text)
-        .then(() => showToast("📋 Copied!", "#00c853"))
-        .catch(() => showToast("❌ Copy failed!", "#ff1744"));
-    });
-  });
 
   container.style.display = "block";
 }
