@@ -17,6 +17,36 @@ function showToast(msg, color = "#00c853", reload = false, withLoader = false) {
   }, withLoader ? 2000 : 1500);
 }
 
+function showSaveCodePopup() {
+  document.getElementById("saveCodePopup").style.display = "flex";
+}
+
+function hideSaveCodePopup(e) {
+  if (!e || e.target.id === "saveCodePopup") {
+    document.getElementById("saveCodePopup").style.display = "none";
+  }
+}
+
+function saveFloatingCode() {
+  const code = document.getElementById("popupCode").value.trim();
+  const number = document.getElementById("popupNumber").value.trim();
+
+  if (!code || !number || isNaN(number) || (code.length !== 8 && code.length !== 9)) {
+    showToast("❌ Fill both fields properly!");
+    return;
+  }
+
+  let saved = JSON.parse(localStorage.getItem("saved_code_popup") || "[]");
+  saved.unshift({ code, number });
+  localStorage.setItem("saved_code_popup", JSON.stringify(saved));
+
+  showToast("✅ Saved!");
+  document.getElementById("saveCodePopup").style.display = "none";
+
+  document.getElementById("popupCode").value = "";
+  document.getElementById("popupNumber").value = "";
+}
+
 function toggleSection(mode) {
   document.getElementById("codeSection").style.display = "none";
   document.getElementById("outputSection").style.display = "none";
