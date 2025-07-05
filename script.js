@@ -27,6 +27,24 @@ function toggleSection(mode) {
   document.getElementById("historyOutput").style.display = "none";
   document.getElementById("listPopup").style.display = "none";
   document.getElementById("userListPopup").style.display = "none";
+  function showSavePopup() {
+  document.getElementById("popupCodeInput").value = "";
+  document.getElementById("popupNumberInput").value = "";
+  document.getElementById("saveCodePopup").style.display = "flex";
+  document.getElementById("popupCodeInput").focus();
+}
+
+function hideSavePopup(e) {
+  if (!e || e.target.id === "saveCodePopup") {
+    document.getElementById("saveCodePopup").style.display = "none";
+  }
+}
+  document.getElementById("popupCodeInput").addEventListener("input", () => {
+  const val = document.getElementById("popupCodeInput").value.trim();
+  if (val.length >= 8) {
+    document.getElementById("popupNumberInput").focus();
+  }
+});
 
   if (mode === "home") {
     document.getElementById("codeSection").style.display = "flex";
