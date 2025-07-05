@@ -208,12 +208,21 @@ function showHistory() {
         `<div style="display: flex; align-items: center; gap: 15px; background: #000; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; justify-content: space-between; flex-wrap: wrap;">
           <span style="font-weight: bold;">📅 ${h.date}</span>
           <span style="display: flex; gap: 10px;">
-            <button onclick="navigator.clipboard.writeText(\`${h.output}\`).then(()=>showToast('📋 Copied!', '#00c853'))" class="btn-copy">📋</button>
+            <button class="btn-copy copy-history" data-text="${encodeURIComponent(h.output)}">📋</button>
             <button onclick="deleteHistory(${i})" style="background:#d32f2f; color:#fff; border:none; padding:10px 15px; border-radius:8px;">❌</button>
           </span>
         </div>`
       ).join("");
   }
+
+  document.querySelectorAll(".copy-history").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const text = decodeURIComponent(btn.getAttribute("data-text"));
+      navigator.clipboard.writeText(text)
+        .then(() => showToast("📋 Copied!", "#00c853"))
+        .catch(() => showToast("❌ Copy failed!", "#ff1744"));
+    });
+  });
 
   container.style.display = "block";
 }
@@ -248,6 +257,30 @@ function showBottomPopup() {
 }
 function hideBottomPopup(e) {
   document.getElementById('bottomLinkPopup').style.display = 'none';
+}
+
+function showSavePopup() {
+  const popup = document.getElementById("saveCodePopup");
+  popup.style.display = "flex";
+  const now = new Date();
+  document.getElementById("saveTitleInput").value = "";
+  document.getElementById("saveDateTime").innerText = now.toLocaleString();
+}
+function hideSavePopup(e) {
+  if (!e || e.target.id === "saveCodePopup") {
+    document.getElementById("saveCodePopup").style.display = "none";
+  }
+}
+function saveCodeData() {
+  const title = document.getElementById("saveTitleInput").value.trim();
+  const output = document.getElementById("result").innerText.trim();
+  if (!title || !output) return showToast("❌ Title or data missing!", "#ff1744");
+  const now = new Date().toLocaleString();
+  let saved = JSON.parse(localStorage.getItem("amit_final_history") || "[]");
+  saved.unshift({ title, output, time: now });
+  localStorage.setItem("amit_final_history", JSON.stringify(saved));
+  showToast("✅ Saved!", "#00c853");
+  document.getElementById("saveCodePopup").style.display = "none";
 }
 
 window.onload = () => {
