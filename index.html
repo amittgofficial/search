@@ -1,0 +1,89 @@
+1<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      background-color: #1e1e1e;
+      border-bottom: 1px solid #333;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #1e1e1e;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #cc0000;
+      color: white;
+      cursor: pointer;
+      margin-top: auto;
+    }
+
+    iframe {
+      flex: 1;
+      border: none;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🔍 YouTube Search</header>
+
+  <main>
+    <input type="text" id="queryInput" placeholder="Search YouTube..." />
+    <button onclick="searchYouTube()">Search</button>
+    <iframe id="ytFrame" style="display:none;" allowfullscreen></iframe>
+  </main>
+
+  <script>
+    function searchYouTube() {
+      const query = document.getElementById('queryInput').value.trim();
+      if (!query) return;
+
+      const iframe = document.getElementById('ytFrame');
+      const encodedQuery = encodeURIComponent(query);
+      const searchURL = `https://www.youtube.com/results?search_query=${encodedQuery}`;
+
+      iframe.src = searchURL;
+      iframe.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
