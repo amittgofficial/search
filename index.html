@@ -2,101 +2,128 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title></title>
+  <title>@AmitTG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #e8f0fe, #ffffff);
+      background: linear-gradient(to bottom right, #ffffff, #e0f7fa);
       margin: 0;
       padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
-    h1 {
-      color: #d62828;
-      margin-bottom: 20px;
+
+    .container {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
+      margin-bottom: 20px;
     }
-    h1 img {
+
+    .logo img {
       width: 40px;
-      height: auto;
+      height: 40px;
     }
+
+    h1 {
+      font-size: 22px;
+      color: #d62828;
+    }
+
     input {
       padding: 12px;
       font-size: 16px;
-      width: 90%;
-      max-width: 400px;
+      width: 95%;
       border: 2px solid #ccc;
-      border-radius: 8px;
+      border-radius: 10px;
       outline: none;
+      margin-bottom: 20px;
     }
+
     .btn {
-      margin-top: 15px;
       padding: 12px 20px;
       font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
       background-color: #0077ff;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s ease;
-      width: 90%;
-      max-width: 300px;
+      transition: all 0.3s ease;
     }
+
     .btn:hover {
       background-color: #005bd1;
     }
+
     .reset-btn {
-      background-color: #ff5e5e;
+      background-color: #888;
     }
+
     .reset-btn:hover {
-      background-color: #e03e3e;
+      background-color: #555;
     }
+
     footer {
-      margin-top: 40px;
+      margin-top: 30px;
+      font-size: 13px;
       color: #666;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="">
-  </h1>
 
-  <input type="text" id="searchInput" placeholder="Enter a tag or keyword (e.g. tech, gaming, news)" />
-  
-  <button class="btn" onclick="searchYouTube('hour')">Search</button>
-  <button class="btn" onclick="searchYouTube('today')">Today</button>
-  <button class="btn reset-btn" onclick="resetInput()">Reset</button>
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
+      <h1></h1>
+    </div>
 
-  <footer>Powered by YouTube</footer>
+    <input type="text" id="searchInput" placeholder="Enter tag or keyword...">
+
+    <button class="btn" onclick="searchYouTube()">Last Hour</button>
+    <button class="btn" onclick="searchNormal()">Search</button>
+    <button class="btn reset-btn" onclick="resetInput()">Reset</button>
+
+    <footer>Powered by YouTube</footer>
+  </div>
 
   <script>
-    function searchYouTube(type) {
+    function searchYouTube() {
       const query = document.getElementById('searchInput').value.trim();
-      if (!query) return alert("Please enter a search term or tag.");
+      if (!query) return alert("Please enter a search term.");
+      const encoded = encodeURIComponent(query);
+      const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`; // Last Hour Filter
+      window.open(url, "_blank");
+    }
 
-      const encodedQuery = encodeURIComponent(query);
-      let filter = "";
-
-      if (type === "hour") {
-        filter = "EgIIAg%253D%253D"; // Last Hour filter
-      } else if (type === "today") {
-        filter = "EgQIAhAB"; // Today filter
-      }
-
-      const url = `https://www.youtube.com/results?search_query=${encodedQuery}&sp=${filter}`;
-      window.open(url, '_blank');
+    function searchNormal() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return alert("Please enter a search term.");
+      const encoded = encodeURIComponent(query);
+      const url = `https://www.youtube.com/results?search_query=${encoded}`;
+      window.open(url, "_blank");
     }
 
     function resetInput() {
       document.getElementById('searchInput').value = '';
     }
   </script>
+
 </body>
 </html>
