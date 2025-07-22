@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube</title>
+  <title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -17,6 +17,13 @@
     h1 {
       color: #d62828;
       margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h1 img {
+      width: 40px;
+      height: auto;
     }
     input {
       padding: 12px;
@@ -27,7 +34,7 @@
       border-radius: 8px;
       outline: none;
     }
-    button {
+    .btn {
       margin-top: 15px;
       padding: 12px 20px;
       font-size: 16px;
@@ -37,9 +44,17 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s ease;
+      width: 90%;
+      max-width: 300px;
     }
-    button:hover {
+    .btn:hover {
       background-color: #005bd1;
+    }
+    .reset-btn {
+      background-color: #ff5e5e;
+    }
+    .reset-btn:hover {
+      background-color: #e03e3e;
     }
     footer {
       margin-top: 40px;
@@ -49,22 +64,38 @@
   </style>
 </head>
 <body>
-  <h1>🔍 YouTube</h1>
+  <h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="">
+  </h1>
+
   <input type="text" id="searchInput" placeholder="Enter a tag or keyword (e.g. tech, gaming, news)" />
-  <button onclick="searchYouTube()">Search on YouTube</button>
+  
+  <button class="btn" onclick="searchYouTube('hour')">Search</button>
+  <button class="btn" onclick="searchYouTube('today')">Today</button>
+  <button class="btn reset-btn" onclick="resetInput()">Reset</button>
 
   <footer>Powered by YouTube</footer>
 
   <script>
-    function searchYouTube() {
+    function searchYouTube(type) {
       const query = document.getElementById('searchInput').value.trim();
       if (!query) return alert("Please enter a search term or tag.");
 
-      // YouTube search + last hour filter encoded parameter
       const encodedQuery = encodeURIComponent(query);
-      const lastHourURL = `https://www.youtube.com/results?search_query=${encodedQuery}&sp=EgIIAQ%253D%253D`;
+      let filter = "";
 
-      window.open(lastHourURL, '_blank');
+      if (type === "hour") {
+        filter = "EgIIAg%253D%253D"; // Last Hour filter
+      } else if (type === "today") {
+        filter = "EgQIAhAB"; // Today filter
+      }
+
+      const url = `https://www.youtube.com/results?search_query=${encodedQuery}&sp=${filter}`;
+      window.open(url, '_blank');
+    }
+
+    function resetInput() {
+      document.getElementById('searchInput').value = '';
     }
   </script>
 </body>
