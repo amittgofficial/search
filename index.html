@@ -2,126 +2,373 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>@AmitTG</title>
+  <title>Search Tool</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+      transition: 0.3s ease;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #ffffff, #e0f7fa);
       margin: 0;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .container {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      max-width: 500px;
-      width: 100%;
+    h2 {
       text-align: center;
+      font-size: 28px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease;
     }
 
-    .logo {
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+      animation: slideIn 0.6s ease;
+    }
+
+    .search-bar input {
+      padding: 12px 20px;
+      width: 300px;
+      font-size: 15px;
+      border: none;
+      border-radius: 30px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      box-shadow: inset 0 0 5px #00c6ff88;
+    }
+
+    .search-bar input::placeholder {
+      color: #ccc;
+    }
+
+    .filters {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filters button {
+      background: #ffffff11;
+      border: 1px solid #ffffff22;
+      padding: 8px 16px;
+      margin: 5px;
+      font-size: 13px;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .filters button:hover {
+      background: #00c6ff33;
+      transform: scale(1.05);
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0 20px;
+    }
+
+    .action-buttons button {
+      padding: 12px 22px;
+      font-size: 15px;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      animation: pulse 2s infinite;
+      box-shadow: 0 4px 12px rgba(0, 198, 255, 0.3);
+    }
+
+    .action-buttons button:active {
+      transform: scale(0.95);
+      animation: pressed 0.2s;
+    }
+
+    .search-btn {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+    }
+
+    .clear-btn {
+      background: linear-gradient(to right, #ff416c, #ff4e50);
+    }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      position: relative;
+    }
+
+    .video-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+
+    .video-card img.thumbnail {
+      width: 100%;
+      height: auto;
+    }
+
+    .video-info {
+      padding: 15px;
+    }
+
+    .video-info h3 {
+      font-size: 16px;
+      margin: 5px 0 10px;
+    }
+
+    .channel-row {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .logo img {
-      width: 40px;
-      height: 40px;
-    }
-
-    h1 {
-      font-size: 22px;
-      color: #d62828;
-    }
-
-    input {
-      padding: 12px;
-      font-size: 16px;
-      width: 95%;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      outline: none;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      padding: 12px 20px;
-      font-size: 16px;
-      width: 100%;
-      margin-top: 10px;
-      background-color: #0077ff;
-      color: white;
-      border: none;
-      border-radius: 10px;
+      margin-top: 5px;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
 
-    .btn:hover {
-      background-color: #005bd1;
+    .channel-row img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #ffffff33;
     }
 
-    .reset-btn {
-      background-color: #888;
+    .channel-row p {
+      margin: 0;
+      font-weight: bold;
     }
 
-    .reset-btn:hover {
-      background-color: #555;
+    .channel-row a {
+      font-size: 12px;
+      color: #00c6ff;
+      text-decoration: none;
     }
 
-    footer {
-      margin-top: 30px;
+    .copy-btn {
+      margin-top: 10px;
+      padding: 8px 14px;
+      background: #00c6ff33;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
       font-size: 13px;
-      color: #666;
+    }
+
+    .copy-btn:hover {
+      background: #00c6ff88;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #00c6ff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      .search-bar {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .action-buttons button {
+        width: 80%;
+        margin-bottom: 10px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 10px #00c6ff55; }
+      50% { box-shadow: 0 0 20px #00c6ff; }
+    }
+
+    @keyframes pressed {
+      0% { filter: brightness(1.1); }
+      100% { filter: brightness(0.9); }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
-      <h1></h1>
-    </div>
+  <h2>🔍 Search</h2>
 
-    <input type="text" id="searchInput" placeholder="Enter tag or keyword...">
-
-    <button class="btn" onclick="searchYouTube()">Last Hour</button>
-    <button class="btn" onclick="searchNormal()">Search</button>
-    <button class="btn reset-btn" onclick="resetInput()">Reset</button>
-
-    <footer>Powered by YouTube</footer>
+  <div class="search-bar">
+    <input type="text" id="searchQuery" placeholder="Enter search tag..." />
   </div>
 
+  <div class="action-buttons">
+    <button onclick="searchVideos()" class="search-btn">Search</button>
+    <button onclick="clearResults()" class="clear-btn">Clear All</button>
+  </div>
+
+  <div class="filters">
+    <button onclick="setFilter('all')">All</button>
+    <button onclick="setFilter('today')">Today</button>
+    <button onclick="setFilter('hour')">Last Hour</button>
+  </div>
+
+  <div id="results"></div>
+  <div id="toast" class="toast">Copied to clipboard</div>
+
   <script>
-    function searchYouTube() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return alert("Please enter a search term.");
-      const encoded = encodeURIComponent(query);
-      const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`; // Last Hour Filter
-      window.open(url, "_blank");
+    const apiKey = 'AIzaSyDDq8qrwx33s-b7X3lRaujbmSZjB46732s';
+    let currentFilter = 'all';
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
     }
 
-    function searchNormal() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return alert("Please enter a search term.");
-      const encoded = encodeURIComponent(query);
-      const url = `https://www.youtube.com/results?search_query=${encoded}`;
-      window.open(url, "_blank");
+    function setFilter(f) {
+      currentFilter = f;
+      searchVideos();
     }
 
-    function resetInput() {
-      document.getElementById('searchInput').value = '';
+    function timeAgo(dateString) {
+      const now = new Date();
+      const posted = new Date(dateString);
+      const diffMs = now - posted;
+      const mins = Math.floor(diffMs / 60000);
+      if (mins < 60) return `${mins} min ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs} hrs ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days} days ago`;
+    }
+
+    async function searchVideos(channelId = null) {
+      const query = document.getElementById('searchQuery').value.trim();
+      const resultsDiv = document.getElementById('results');
+      let url = "";
+
+      let publishedAfter = "";
+      if (currentFilter === "hour") {
+        const d = new Date(Date.now() - 60 * 60 * 1000);
+        publishedAfter = `&publishedAfter=${d.toISOString()}`;
+      } else if (currentFilter === "today") {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        publishedAfter = `&publishedAfter=${d.toISOString()}`;
+      }
+
+      if (channelId) {
+        url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&order=date&channelId=${channelId}${publishedAfter}&key=${apiKey}`;
+      } else {
+        if (!query) {
+          showToast("Please enter a search keyword.");
+          return;
+        }
+        url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${encodeURIComponent(query)}${publishedAfter}&key=${apiKey}`;
+      }
+
+      resultsDiv.innerHTML = "<p style='text-align:center;'>Loading...</p>";
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.items || data.items.length === 0) {
+          resultsDiv.innerHTML = "";
+          showToast("No results found.");
+          return;
+        }
+
+        resultsDiv.innerHTML = "";
+
+        for (const item of data.items) {
+          const videoId = item.id.videoId;
+          const { title, channelTitle, thumbnails, publishedAt, channelId } = item.snippet;
+          const videoUrl = `https://youtu.be/${videoId}`;
+          const thumbnail = thumbnails.medium.url;
+
+          const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${apiKey}`);
+          const channelData = await channelRes.json();
+          const channelLogo = channelData.items[0].snippet.thumbnails.default.url;
+          const channelUrl = `https://www.youtube.com/channel/${channelId}`;
+
+          const card = document.createElement('div');
+          card.className = 'video-card';
+          card.innerHTML = `
+            <img src="${thumbnail}" class="thumbnail">
+            <div class="video-info">
+              <h3>${title}</h3>
+              <div class="channel-row" onclick="searchVideos('${channelId}')">
+                <img src="${channelLogo}" title="Click to show ${channelTitle} videos">
+                <div>
+                  <p>${channelTitle}</p>
+                  <a href="${channelUrl}" target="_blank">Subscribe</a>
+                </div>
+              </div>
+              <p>🕒 ${timeAgo(publishedAt)}</p>
+              <button class="copy-btn" onclick="copyToClipboard('${videoUrl}')">Copy Link</button>
+            </div>
+          `;
+          resultsDiv.appendChild(card);
+        }
+      } catch (err) {
+        resultsDiv.innerHTML = "";
+        console.error(err);
+        showToast("Error fetching videos.");
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Copied to clipboard");
+      });
+    }
+
+    function clearResults() {
+      document.getElementById('searchQuery').value = '';
+      document.getElementById('results').innerHTML = '';
+      showToast("Cleared all results");
     }
   </script>
 
