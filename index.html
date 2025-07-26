@@ -2,369 +2,255 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Search Tool</title>
+  <title>YouTube Search</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-      transition: 0.3s ease;
-    }
-
     body {
       margin: 0;
-      padding: 20px;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
+      padding: 1rem;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
     }
-
-    h2 {
+    h1 {
       text-align: center;
-      font-size: 28px;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-      animation: fadeIn 1s ease;
+      color: #e50914;
     }
-
-    .search-bar {
+    .search-box {
       display: flex;
-      justify-content: center;
-      margin-bottom: 15px;
-      animation: slideIn 0.6s ease;
+      gap: 10px;
+      margin-bottom: 1rem;
     }
-
-    .search-bar input {
-      padding: 12px 20px;
-      width: 300px;
-      font-size: 15px;
+    .search-box input {
+      flex: 1;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .search-box button {
+      padding: 0.7rem 1rem;
       border: none;
-      border-radius: 30px;
-      outline: none;
-      background: rgba(255, 255, 255, 0.1);
+      background-color: #e50914;
       color: white;
-      box-shadow: inset 0 0 5px #00c6ff88;
-    }
-
-    .search-bar input::placeholder {
-      color: #ccc;
-    }
-
-    .filters {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .filters button {
-      background: #ffffff11;
-      border: 1px solid #ffffff22;
-      padding: 8px 16px;
-      margin: 5px;
-      font-size: 13px;
-      border-radius: 20px;
-      color: #fff;
+      border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
     }
-
-    .filters button:hover {
-      background: #00c6ff33;
-      transform: scale(1.05);
-    }
-
-    .action-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin: 30px 0 20px;
-    }
-
-    .action-buttons button {
-      padding: 12px 22px;
-      font-size: 15px;
-      border: none;
-      border-radius: 30px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      animation: pulse 2s infinite;
-      box-shadow: 0 4px 12px rgba(0, 198, 255, 0.3);
-    }
-
-    .action-buttons button:active {
-      transform: scale(0.95);
-      animation: pressed 0.2s;
-    }
-
-    
-
-    #results {
+    .results {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      position: relative;
+      gap: 1rem;
+      margin-bottom: 70px;
     }
-
     .video-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(6px);
-      border-radius: 16px;
+      background: white;
+      border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      animation: fadeIn 0.5s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
     .video-card img.thumbnail {
       width: 100%;
       height: auto;
+      display: block;
     }
-
     .video-info {
-      padding: 15px;
-    }
-
-    .video-info h3 {
-      font-size: 16px;
-      margin: 5px 0 10px;
-    }
-
-    .channel-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 5px;
+      padding: 0.5rem 1rem;
       cursor: pointer;
     }
-
-    .channel-row img {
-      width: 36px;
-      height: 36px;
+    .video-info img.channel-logo {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      border: 2px solid #ffffff33;
     }
-
-    .channel-row p {
+    .video-info h3 {
       margin: 0;
-      font-weight: bold;
+      font-size: 1rem;
     }
-
-    .channel-row a {
-      font-size: 12px;
-      color: #00c6ff;
-      text-decoration: none;
-    }
-
-    .copy-btn {
-      margin-top: 10px;
-      padding: 8px 14px;
-      background: #00c6ff33;
+    .copy-button {
+      margin: 0.5rem 1rem 1rem;
+      padding: 5px 12px;
       border: none;
+      background: #e50914;
       color: white;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
     }
-
-    .copy-btn:hover {
-      background: #00c6ff88;
-    }
-
-    .toast {
+    #toast {
+      visibility: hidden;
+      min-width: 120px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px;
       position: fixed;
-      bottom: 20px;
+      z-index: 1;
       left: 50%;
+      bottom: 30px;
       transform: translateX(-50%);
-      background: #00c6ff;
+      font-size: 14px;
+    }
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.3s, fadeout 0.3s 1.5s;
+    }
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
+    @keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
+    .filter-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+    }
+    .filter-bar button {
+      border: none;
+      background: none;
+      font-size: 16px;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 20px;
+    }
+    .filter-bar button.active {
+      background: #e50914;
       color: white;
-      padding: 10px 20px;
-      border-radius: 30px;
-      opacity: 0;
-      pointer-events: none;
-      transition: 0.3s ease;
-      z-index: 999;
-    }
-
-    .toast.show {
-      opacity: 1;
-    }
-
-    @media (max-width: 600px) {
-      .search-bar {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .action-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .action-buttons button {
-        width: 80%;
-        margin-bottom: 10px;
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 10px #00c6ff55; }
-      50% { box-shadow: 0 0 20px #00c6ff; }
-    }
-
-    @keyframes pressed {
-      0% { filter: brightness(1.1); }
-      100% { filter: brightness(0.9); }
     }
   </style>
 </head>
 <body>
-
-  <h2>🔍 Search</h2>
-
-  <div class="search-bar">
-    <input type="text" id="searchQuery" placeholder="Enter search tag..." />
+  <h1>YouTube Search</h1>
+  <div class="search-box">
+    <input type="text" id="query" placeholder="Search YouTube...">
+    <button onclick="search()">Search</button>
   </div>
-
-  <div class="action-buttons">
-    <button onclick="searchVideos()" class="search-btn"></button>
-    <button onclick="clearResults()" class="clear-btn"></button>
+  <div class="results" id="results"></div>
+  <div class="filter-bar">
+    <button id="filter-all" class="active" onclick="setFilter('all')">All</button>
+    <button id="filter-today" onclick="setFilter('today')">Today</button>
+    <button id="filter-hour" onclick="setFilter('hour')">Last Hour</button>
   </div>
-
-  <div class="filters">
-    <button onclick="setFilter('all')"></button>
-    <button onclick="setFilter('today')"></button>
-    <button onclick="setFilter('hour')">Last Hour</button>
-  </div>
-
-  <div id="results"></div>
-  <div id="toast" class="toast">Copied to clipboard</div>
+  <div id="toast">✅ Link Copied!</div>
 
   <script>
-    const apiKey = 'AIzaSyDFvv93DEI4LG-uCwR8EGWm1lQ_i6Ob1n8';
-    let currentFilter = 'all';
+    const API_KEY = "AIzaSyDFvv93DEI4LG-uCwR8EGWm1lQ_i6Ob1n8";
+    let currentFilter = "all";
 
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.innerText = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+    function setFilter(type) {
+      currentFilter = type;
+      document.querySelectorAll(".filter-bar button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(`filter-${type}`).classList.add("active");
+      search(); // re-search with new filter
     }
 
-    function setFilter(f) {
-      currentFilter = f;
-      searchVideos();
-    }
-
-    function timeAgo(dateString) {
+    function getPublishedAfter() {
       const now = new Date();
-      const posted = new Date(dateString);
-      const diffMs = now - posted;
-      const mins = Math.floor(diffMs / 60000);
-      if (mins < 60) return `${mins} min ago`;
-      const hrs = Math.floor(mins / 60);
-      if (hrs < 24) return `${hrs} hrs ago`;
-      const days = Math.floor(hrs / 24);
-      return `${days} days ago`;
+      if (currentFilter === "hour") {
+        now.setHours(now.getHours() - 1);
+        return now.toISOString();
+      } else if (currentFilter === "today") {
+        now.setHours(0, 0, 0, 0);
+        return now.toISOString();
+      }
+      return null;
     }
 
-    async function searchVideos(channelId = null) {
-      const query = document.getElementById('searchQuery').value.trim();
-      const resultsDiv = document.getElementById('results');
-      let url = "";
+    async function search() {
+      const query = document.getElementById('query').value.trim();
+      if (!query) return alert("Type something to search");
 
-      let publishedAfter = "";
-      if (currentFilter === "hour") {
-        const d = new Date(Date.now() - 60 * 60 * 1000);
-        publishedAfter = `&publishedAfter=${d.toISOString()}`;
-      } else if (currentFilter === "today") {
-        const d = new Date();
-        d.setHours(0, 0, 0, 0);
-        publishedAfter = `&publishedAfter=${d.toISOString()}`;
+      const publishedAfter = getPublishedAfter();
+      let url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&part=snippet&type=video&maxResults=10&q=${encodeURIComponent(query)}`;
+      if (publishedAfter) {
+        url += `&publishedAfter=${publishedAfter}`;
       }
 
-      if (channelId) {
-        url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&order=date&channelId=${channelId}${publishedAfter}&key=${apiKey}`;
-      } else {
-        if (!query) {
-          showToast("Please enter a search keyword.");
-          return;
-        }
-        url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=10&q=${encodeURIComponent(query)}${publishedAfter}&key=${apiKey}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (!data.items || data.items.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found.</p>";
+        return;
       }
 
-      resultsDiv.innerHTML = "<p style='text-align:center;'>Loading...</p>";
+      data.items.forEach(async item => {
+        const videoId = item.id.videoId;
+        const title = item.snippet.title;
+        const channelId = item.snippet.channelId;
+        const thumbnail = item.snippet.thumbnails.medium.url;
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
+        // Get channel icon
+        const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${API_KEY}`);
+        const channelData = await channelRes.json();
+        const channelIcon = channelData.items?.[0]?.snippet?.thumbnails?.default?.url || "";
+        const channelTitle = channelData.items?.[0]?.snippet?.title || "";
 
-        if (!data.items || data.items.length === 0) {
-          resultsDiv.innerHTML = "";
-          showToast("No results found.");
-          return;
-        }
+        const videoLink = `https://www.youtube.com/watch?v=${videoId}`;
 
-        resultsDiv.innerHTML = "";
-
-        for (const item of data.items) {
-          const videoId = item.id.videoId;
-          const { title, channelTitle, thumbnails, publishedAt, channelId } = item.snippet;
-          const videoUrl = `https://youtu.be/${videoId}`;
-          const thumbnail = thumbnails.medium.url;
-
-          const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${apiKey}`);
-          const channelData = await channelRes.json();
-          const channelLogo = channelData.items[0].snippet.thumbnails.default.url;
-          const channelUrl = `https://www.youtube.com/channel/${channelId}`;
-
-          const card = document.createElement('div');
-          card.className = 'video-card';
-          card.innerHTML = `
-            <img src="${thumbnail}" class="thumbnail">
-            <div class="video-info">
+        const videoHTML = `
+          <div class="video-card">
+            <img class="thumbnail" src="${thumbnail}" alt="Thumbnail">
+            <div class="video-info" onclick="showChannelVideos('${channelId}', '${channelTitle}')">
+              <img class="channel-logo" src="${channelIcon}" alt="Channel">
               <h3>${title}</h3>
-              <div class="channel-row" onclick="searchVideos('${channelId}')">
-                <img src="${channelLogo}" title="Click to show ${channelTitle} videos">
-                <div>
-                  <p>${channelTitle}</p>
-                  <a href="${channelUrl}" target="_blank">Subscribe</a>
-                </div>
-              </div>
-              <p>🕒 ${timeAgo(publishedAt)}</p>
-              <button class="copy-btn" onclick="copyToClipboard('${videoUrl}')">Copy Link</button>
             </div>
-          `;
-          resultsDiv.appendChild(card);
-        }
-      } catch (err) {
-        resultsDiv.innerHTML = "";
-        console.error(err);
-        showToast("Error fetching videos.");
-      }
+            <button class="copy-button" onclick="copyToClipboard('${videoLink}')">📋 Copy Link</button>
+          </div>
+        `;
+        resultsDiv.innerHTML += videoHTML;
+      });
     }
 
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
-        showToast("Copied to clipboard");
+        const toast = document.getElementById("toast");
+        toast.className = "show";
+        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
       });
     }
 
-    function clearResults() {
-      document.getElementById('searchQuery').value = '';
-      document.getElementById('results').innerHTML = '';
-      showToast("Cleared all results");
+    async function showChannelVideos(channelId, channelTitle) {
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&maxResults=5`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = `<h2 style="text-align:center;">Latest from ${channelTitle}</h2>`;
+
+      if (!data.items || data.items.length === 0) {
+        resultsDiv.innerHTML += "<p>No videos found.</p>";
+        return;
+      }
+
+      data.items.forEach(item => {
+        const videoId = item.id.videoId;
+        const title = item.snippet.title;
+        const thumbnail = item.snippet.thumbnails.medium.url;
+        const videoLink = `https://www.youtube.com/watch?v=${videoId}`;
+
+        const videoHTML = `
+          <div class="video-card">
+            <img class="thumbnail" src="${thumbnail}" alt="Thumbnail">
+            <div class="video-info">
+              <h3>${title}</h3>
+            </div>
+            <button class="copy-button" onclick="copyToClipboard('${videoLink}')">📋 Copy Link</button>
+          </div>
+        `;
+        resultsDiv.innerHTML += videoHTML;
+      });
     }
   </script>
-
 </body>
 </html>
