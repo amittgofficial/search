@@ -2,255 +2,248 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YouTube Search</title>
+  <title>@AmitTG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
       margin: 0;
-      padding: 1rem;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-    }
-    h1 {
-      text-align: center;
-      color: #e50914;
-    }
-    .search-box {
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
       display: flex;
-      gap: 10px;
-      margin-bottom: 1rem;
-    }
-    .search-box input {
-      flex: 1;
-      padding: 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    .search-box button {
-      padding: 0.7rem 1rem;
-      border: none;
-      background-color: #e50914;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .results {
-      display: grid;
-      gap: 1rem;
-      margin-bottom: 70px;
-    }
-    .video-card {
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .video-card img.thumbnail {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .video-info {
-      display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 10px;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
+      min-height: 100vh;
+      overflow: hidden;
     }
-    .video-info img.channel-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-    .video-info h3 {
-      margin: 0;
-      font-size: 1rem;
-    }
-    .copy-button {
-      margin: 0.5rem 1rem 1rem;
-      padding: 5px 12px;
-      border: none;
-      background: #e50914;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #toast {
-      visibility: hidden;
-      min-width: 120px;
-      background-color: #333;
-      color: #fff;
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      max-width: 480px;
+      width: 90%;
       text-align: center;
-      border-radius: 8px;
-      padding: 10px;
-      position: fixed;
-      z-index: 1;
-      left: 50%;
-      bottom: 30px;
-      transform: translateX(-50%);
-      font-size: 14px;
+      position: relative;
+      animation: floatBox 4s ease-in-out infinite;
     }
-    #toast.show {
-      visibility: visible;
-      animation: fadein 0.3s, fadeout 0.3s 1.5s;
+
+    @keyframes floatBox {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
-    @keyframes fadein {
-      from { bottom: 0; opacity: 0; }
-      to { bottom: 30px; opacity: 1; }
-    }
-    @keyframes fadeout {
-      from { bottom: 30px; opacity: 1; }
-      to { bottom: 0; opacity: 0; }
-    }
-    .filter-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: white;
+
+    .logo {
       display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      border-top: 1px solid #ccc;
-      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 25px;
+      animation: fadeInDown 1.2s ease-out;
     }
-    .filter-bar button {
-      border: none;
-      background: none;
+
+    .logo img {
+      width: 50px;
+      height: 50px;
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .logo h1 {
+      font-size: 28px;
+      color: #ff4081;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 16px;
       font-size: 16px;
-      padding: 6px 12px;
-      cursor: pointer;
-      border-radius: 20px;
+      border: 2px solid #ccc;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
     }
-    .filter-bar button.active {
-      background: #e50914;
+
+    input:focus {
+      border-color: #00bcd4;
+      box-shadow: 0 0 15px #00bcd4aa;
+      transform: scale(1.03);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
       color: white;
+      border: none;
+      border-radius: 14px;
+      margin-top: 12px;
+      cursor: pointer;
+      position: relative;
+      background: linear-gradient(270deg, #0077ff, #00e5ff, #0077ff);
+      background-size: 600% 600%;
+      animation: buttonShimmer 5s ease infinite;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+    }
+
+    .btn:active::after {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      animation: ripple 0.6s ease-out;
+      z-index: 0;
+    }
+
+    @keyframes ripple {
+      from { transform: scale(0); opacity: 1; }
+      to { transform: scale(1); opacity: 0; }
+    }
+
+    @keyframes buttonShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .reset-btn {
+      background: linear-gradient(270deg, #999, #555, #999);
+      background-size: 400% 400%;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #444;
+      animation: fadeInUp 2s ease;
+    }
+
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TOAST STYLES */
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      z-index: 9999;
+      opacity: 0;
+      animation: toastInOut 3s ease forwards;
+    }
+
+    @keyframes toastInOut {
+      0% { opacity: 0; transform: translate(-50%, 20px); }
+      10%, 90% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, 20px); }
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .logo h1 {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>YouTube Search</h1>
-  <div class="search-box">
-    <input type="text" id="query" placeholder="Search YouTube...">
-    <button onclick="search()">Search</button>
+
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
+      <h1>@AmitTG</h1>
+    </div>
+
+    <input type="text" id="searchInput" placeholder="Enter tag or keyword...">
+
+    <button class="btn" onclick="searchYouTube()">🔍 Last Hour</button>
+    <button class="btn" onclick="searchNormal()">📺 Search</button>
+    <button class="btn reset-btn" onclick="resetInput()">♻️ Reset</button>
+
+    <footer>🔥 Designed by @AmitTG • Powered by YouTube</footer>
   </div>
-  <div class="results" id="results"></div>
-  <div class="filter-bar">
-    <button id="filter-all" class="active" onclick="setFilter('all')">All</button>
-    <button id="filter-today" onclick="setFilter('today')">Today</button>
-    <button id="filter-hour" onclick="setFilter('hour')">Last Hour</button>
-  </div>
-  <div id="toast">✅ Link Copied!</div>
+
+  <div id="toast" class="toast" style="display: none;">This is a toast</div>
 
   <script>
-    const API_KEY = "AIzaSyDFvv93DEI4LG-uCwR8EGWm1lQ_i6Ob1n8";
-    let currentFilter = "all";
-
-    function setFilter(type) {
-      currentFilter = type;
-      document.querySelectorAll(".filter-bar button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById(`filter-${type}`).classList.add("active");
-      search(); // re-search with new filter
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.display = "block";
+      toast.classList.remove("toast"); // restart animation
+      void toast.offsetWidth;
+      toast.classList.add("toast");
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
     }
 
-    function getPublishedAfter() {
-      const now = new Date();
-      if (currentFilter === "hour") {
-        now.setHours(now.getHours() - 1);
-        return now.toISOString();
-      } else if (currentFilter === "today") {
-        now.setHours(0, 0, 0, 0);
-        return now.toISOString();
-      }
-      return null;
+    function searchYouTube() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return showToast("❌ Please enter a search term!");
+      const encoded = encodeURIComponent(query);
+      const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
+      window.open(url, "_blank");
+      showToast("✅ Searching Last Hour Videos...");
     }
 
-    async function search() {
-      const query = document.getElementById('query').value.trim();
-      if (!query) return alert("Type something to search");
-
-      const publishedAfter = getPublishedAfter();
-      let url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&part=snippet&type=video&maxResults=10&q=${encodeURIComponent(query)}`;
-      if (publishedAfter) {
-        url += `&publishedAfter=${publishedAfter}`;
-      }
-
-      const res = await fetch(url);
-      const data = await res.json();
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "";
-
-      if (!data.items || data.items.length === 0) {
-        resultsDiv.innerHTML = "<p>No results found.</p>";
-        return;
-      }
-
-      data.items.forEach(async item => {
-        const videoId = item.id.videoId;
-        const title = item.snippet.title;
-        const channelId = item.snippet.channelId;
-        const thumbnail = item.snippet.thumbnails.medium.url;
-
-        // Get channel icon
-        const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${channelId}&key=${API_KEY}`);
-        const channelData = await channelRes.json();
-        const channelIcon = channelData.items?.[0]?.snippet?.thumbnails?.default?.url || "";
-        const channelTitle = channelData.items?.[0]?.snippet?.title || "";
-
-        const videoLink = `https://www.youtube.com/watch?v=${videoId}`;
-
-        const videoHTML = `
-          <div class="video-card">
-            <img class="thumbnail" src="${thumbnail}" alt="Thumbnail">
-            <div class="video-info" onclick="showChannelVideos('${channelId}', '${channelTitle}')">
-              <img class="channel-logo" src="${channelIcon}" alt="Channel">
-              <h3>${title}</h3>
-            </div>
-            <button class="copy-button" onclick="copyToClipboard('${videoLink}')">📋 Copy Link</button>
-          </div>
-        `;
-        resultsDiv.innerHTML += videoHTML;
-      });
+    function searchNormal() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return showToast("❌ Please enter a search term!");
+      const encoded = encodeURIComponent(query);
+      const url = `https://www.youtube.com/results?search_query=${encoded}`;
+      window.open(url, "_blank");
+      showToast("🔎 Showing All Results...");
     }
 
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const toast = document.getElementById("toast");
-        toast.className = "show";
-        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
-      });
-    }
-
-    async function showChannelVideos(channelId, channelTitle) {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${channelId}&part=snippet&type=video&order=date&maxResults=5`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = `<h2 style="text-align:center;">Latest from ${channelTitle}</h2>`;
-
-      if (!data.items || data.items.length === 0) {
-        resultsDiv.innerHTML += "<p>No videos found.</p>";
-        return;
-      }
-
-      data.items.forEach(item => {
-        const videoId = item.id.videoId;
-        const title = item.snippet.title;
-        const thumbnail = item.snippet.thumbnails.medium.url;
-        const videoLink = `https://www.youtube.com/watch?v=${videoId}`;
-
-        const videoHTML = `
-          <div class="video-card">
-            <img class="thumbnail" src="${thumbnail}" alt="Thumbnail">
-            <div class="video-info">
-              <h3>${title}</h3>
-            </div>
-            <button class="copy-button" onclick="copyToClipboard('${videoLink}')">📋 Copy Link</button>
-          </div>
-        `;
-        resultsDiv.innerHTML += videoHTML;
-      });
+    function resetInput() {
+      document.getElementById('searchInput').value = '';
+      showToast("🔄 Input Cleared!");
     }
   </script>
+
 </body>
 </html>
