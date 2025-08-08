@@ -210,56 +210,53 @@
 
   <script>
     function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.display = "block";
+      toast.classList.remove("toast"); // restart animation
+      void toast.offsetWidth;
+      toast.classList.add("toast");
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3000);
+    }
 
-<script>
-  function showToast(message) {
-    const toast = document.getElementById("toast");
-    toast.textContent = message;
-    toast.style.display = "block";
-    toast.classList.remove("toast"); // restart animation
-    void toast.offsetWidth;
-    toast.classList.add("toast");
-    setTimeout(() => {
-      toast.style.display = "none";
-    }, 3000);
-  }
-
-  function searchYouTube() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) return showToast("❌ Please enter a search term!");
-    const encoded = encodeURIComponent(query);
-    const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
-    window.open(url, "_blank");
-    showToast("✅ Searching Last Hour Videos...");
-  }
-
-  function searchNormal() {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) return showToast("❌ Please enter a search term!");
-    const encoded = encodeURIComponent(query);
-    const url = `https://www.youtube.com/results?search_query=${encoded}`;
-    window.open(url, "_blank");
-    showToast("🔎 Showing All Results...");
-  }
-
-  function resetInput() {
-    document.getElementById('searchInput').value = '';
-    showToast("🔄 Input Cleared!");
-  }
-
-  // Auto search on paste for last hour videos
-  document.getElementById('searchInput').addEventListener('paste', function(e) {
-    setTimeout(() => {
-      const query = this.value.trim();
-      if (!query) return;
+    function searchYouTube() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return showToast("❌ Please enter a search term!");
       const encoded = encodeURIComponent(query);
       const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
       window.open(url, "_blank");
       showToast("✅ Searching Last Hour Videos...");
-      this.value = '';
-    }, 10);
-  });
-</script>
+    }
+
+    function searchNormal() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (!query) return showToast("❌ Please enter a search term!");
+      const encoded = encodeURIComponent(query);
+      const url = `https://www.youtube.com/results?search_query=${encoded}`;
+      window.open(url, "_blank");
+      showToast("🔎 Showing All Results...");
+    }
+
+    function resetInput() {
+      document.getElementById('searchInput').value = '';
+      showToast("🔄 Input Cleared!");
+    }
+
+    // Auto search on paste for last hour videos
+    document.getElementById('searchInput').addEventListener('paste', function(e) {
+      setTimeout(() => {
+        const query = this.value.trim();
+        if (!query) return;
+        const encoded = encodeURIComponent(query);
+        const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
+        window.open(url, "_blank");
+        showToast("✅ Searching Last Hour Videos...");
+        this.value = '';
+      }, 10);
+    });
+  </script>
 
 </body>
 </html>
