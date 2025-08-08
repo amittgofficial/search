@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>@AmitTG</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     * {
       box-sizing: border-box;
@@ -73,7 +73,7 @@
       font-weight: 700;
     }
 
-    input {
+    input#searchBox {
       width: 100%;
       padding: 15px 16px;
       font-size: 16px;
@@ -83,59 +83,10 @@
       transition: all 0.3s ease;
     }
 
-    input:focus {
+    input#searchBox:focus {
       border-color: #00bcd4;
       box-shadow: 0 0 15px #00bcd4aa;
       transform: scale(1.03);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      color: white;
-      border: none;
-      border-radius: 14px;
-      margin-top: 12px;
-      cursor: pointer;
-      position: relative;
-      background: linear-gradient(270deg, #0077ff, #00e5ff, #0077ff);
-      background-size: 600% 600%;
-      animation: buttonShimmer 5s ease infinite;
-      overflow: hidden;
-    }
-
-    .btn:hover {
-      transform: scale(1.03);
-    }
-
-    .btn:active::after {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      top: -50%;
-      left: -50%;
-      background: rgba(255,255,255,0.2);
-      border-radius: 50%;
-      animation: ripple 0.6s ease-out;
-      z-index: 0;
-    }
-
-    @keyframes ripple {
-      from { transform: scale(0); opacity: 1; }
-      to { transform: scale(1); opacity: 0; }
-    }
-
-    @keyframes buttonShimmer {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .reset-btn {
-      background: linear-gradient(270deg, #999, #555, #999);
-      background-size: 400% 400%;
     }
 
     footer {
@@ -154,108 +105,41 @@
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-
-    /* TOAST STYLES */
-    .toast {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 14px 20px;
-      border-radius: 30px;
-      font-size: 14px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      z-index: 9999;
-      opacity: 0;
-      animation: toastInOut 3s ease forwards;
-    }
-
-    @keyframes toastInOut {
-      0% { opacity: 0; transform: translate(-50%, 20px); }
-      10%, 90% { opacity: 1; transform: translate(-50%, 0); }
-      100% { opacity: 0; transform: translate(-50%, 20px); }
-    }
-
-    @media (max-width: 500px) {
-      .container {
-        padding: 30px 20px;
-      }
-
-      .logo h1 {
-        font-size: 22px;
-      }
-    }
   </style>
 </head>
 <body>
 
   <div class="container">
     <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" />
       <h1>@AmitTG</h1>
     </div>
 
-    <input type="text" id="searchInput" placeholder="Enter tag or keyword...">
-
-    <button class="btn" onclick="searchYouTube()">🔍 Last Hour</button>
-    <button class="btn" onclick="searchNormal()">📺 Search</button>
-    <button class="btn reset-btn" onclick="resetInput()">♻️ Reset</button>
+    <input type="text" id="searchBox" placeholder="Search YouTube (Last Hour)" oninput="handleSearchInput()" autocomplete="off" />
 
     <footer>Powered by YouTube</footer>
   </div>
 
-  <div id="toast" class="toast" style="display: none;">This is a toast</div>
-
   <script>
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.style.display = "block";
-      toast.classList.remove("toast"); // restart animation
-      void toast.offsetWidth;
-      toast.classList.add("toast");
-      setTimeout(() => {
-        toast.style.display = "none";
-      }, 3000);
-    }
-
     function searchYouTube() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return showToast("❌ Please enter a search term!");
+      const input = document.getElementById('searchBox');
+      const query = input.value.trim();
+      if (!query) return; // ignore empty input
       const encoded = encodeURIComponent(query);
       const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
       window.open(url, "_blank");
-      showToast("✅ Searching Last Hour Videos...");
+      input.value = "";
     }
 
-    function searchNormal() {
-      const query = document.getElementById('searchInput').value.trim();
-      if (!query) return showToast("❌ Please enter a search term!");
-      const encoded = encodeURIComponent(query);
-      const url = `https://www.youtube.com/results?search_query=${encoded}`;
-      window.open(url, "_blank");
-      showToast("🔎 Showing All Results...");
+    // Handle input event — trigger search when paste or input detected
+    let typingTimer;
+    function handleSearchInput() {
+      clearTimeout(typingTimer);
+      // delay search trigger so user can paste or type fully
+      typingTimer = setTimeout(() => {
+        searchYouTube();
+      }, 500); // 500ms after last input
     }
-
-    function resetInput() {
-      document.getElementById('searchInput').value = '';
-      showToast("🔄 Input Cleared!");
-    }
-
-    // Auto search on paste for last hour videos
-    document.getElementById('searchInput').addEventListener('paste', function(e) {
-      setTimeout(() => {
-        const query = this.value.trim();
-        if (!query) return;
-        const encoded = encodeURIComponent(query);
-        const url = `https://www.youtube.com/results?search_query=${encoded}&sp=EgIIAQ%253D%253D`;
-        window.open(url, "_blank");
-        showToast("✅ Searching Last Hour Videos...");
-        this.value = '';
-      }, 10);
-    });
   </script>
 
 </body>
