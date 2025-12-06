@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>@AmitTG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .logo img {
+      width: 40px;
+    }
+
+    .logo h1 {
+      font-size: 25px;
+      color: #ff0000;
+      margin: 0;
+    }
+
+    #searchBox {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 17px;
+      border: 1.5px solid #ccc;
+      border-radius: 30px;
+    }
+
+    /* Popup Background */
+    .popup-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(2px);
+    }
+
+    /* Popup Box */
+    .popup-box {
+      width: 90%;
+      max-width: 350px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .popup-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .option {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .option.active {
+      border-color: #ff0000;
+      background: #ffe7e7;
+    }
+
+    .popup-buttons {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      font-size: 16px;
+    }
+
+    .cancel-btn { background: #eee; }
+    .apply-btn { background: #ff0000; color: white; }
+
+    footer {
+      margin-top: 20px;
+      font-size: 13px;
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg">
+      <h1>@AmitTG</h1>
+    </div>
+
+    <input type="text" id="searchBox" placeholder="Search YouTube..." oninput="openPopup()" autocomplete="off">
+
+    <footer>Powered by YouTube</footer>
+  </div>
+
+  <!-- POPUP -->
+  <div class="popup-bg" id="popup">
+    <div class="popup-box">
+      <div class="popup-title">Choose Filter</div>
+
+      <div class="option" onclick="selectFilter('hour')">Last Hour</div>
+      <div class="option" onclick="selectFilter('today')">Today</div>
+      <div class="option" onclick="selectFilter('week')">This Week</div>
+      <div class="option" onclick="selectFilter('month')">This Month</div>
+
+      <div class="popup-buttons">
+        <button class="btn cancel-btn" onclick="closePopup()">Cancel</button>
+        <button class="btn apply-btn" onclick="applyFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedFilter = null;
+
+    const popup = document.getElementById("popup");
+    const searchBox = document.getElementById("searchBox");
+
+    function openPopup() {
+      if (searchBox.value.trim() !== "") {
+        popup.style.display = "flex";
+      }
+    }
+
+    function closePopup() {
+      popup.style.display = "none";
+    }
+
+    function selectFilter(type) {
+      selectedFilter = type;
+
+      document.querySelectorAll(".option").forEach(opt => opt.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+
+    function applyFilter() {
+      if (!searchBox.value.trim()) return;
+
+      const query = encodeURIComponent(searchBox.value.trim());
+
+      let filterCode = "";
+
+      switch (selectedFilter) {
+        case "hour": filterCode = "EgIIAQ%3D%3D"; break;
+        case "today": filterCode = "EgQIAhAB"; break;
+        case "week": filterCode = "EgQIAxAB"; break;
+        case "month": filterCode = "EgQIBBAB"; break;
+        default: filterCode = "";
+      }
+
+      const url = `https://www.youtube.com/results?search_query=${query}&sp=${filterCode}`;
+
+      window.open(url, "_blank");
+
+      closePopup();
+      searchBox.value = "";
+      selectedFilter = null;
+
+    
+      setTimeout(() => {
+        location.reload();
+      }, 300);
+    }
+
+  
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+
+</body>
+</html>
+
