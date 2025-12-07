@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>YouTube</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json">
   <style>
     * { box-sizing: border-box; }
 
@@ -197,10 +197,33 @@
       }, 300);
     }
 
+
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').then(registration => {
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed') {
+          if (navigator.serviceWorker.controller) {
+            // New update available
+            console.log('New version available!');
+            // You can show an update notification to the user here
+            // For example:
+            if (confirm('A new version is available. Update now?')) {
+              newWorker.postMessage('skipWaiting');
+              window.location.reload();
+            }
+          }
+        }
+      });
+    });
+  });
   
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
+  // Check for updates on page load
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) reg.update();
+    });
   </script>
 
 </body>
